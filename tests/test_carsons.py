@@ -7,6 +7,10 @@ from carsons.carsons import (
     perform_kron_reduction,
 )
 
+# `carsons` implements the model entirely in SI metric units, however this
+# conversion allows us to enter in impedance as ohm-per-mile in the test
+# harness, which means we can lift matrices directly out of the ieee4 test
+# network.
 OHM_PER_MILE_TO_OHM_PER_METER = 1 / 1609.344
 
 
