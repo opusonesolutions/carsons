@@ -1,10 +1,11 @@
 import pytest
 from numpy.testing import assert_array_almost_equal
-from numpy import matrix
-from ar_equipment_profile.fixers.carsons import (
-        perform_kron_reduction,
-        convert_geometric_model,
-        CarsonsEquations)
+from numpy import array, matrix
+from carsons.carsons import (
+    CarsonsEquations,
+    convert_geometric_model,
+    perform_kron_reduction,
+)
 
 OHM_PER_MILE_TO_OHM_PER_METER = 1 / 1609.344
 
