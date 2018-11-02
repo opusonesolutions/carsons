@@ -1,4 +1,3 @@
-from numpy import matrix
 from numpy import zeros
 from numpy.linalg import inv
 from numpy import pi as π
@@ -19,13 +18,43 @@ def convert_geometric_model(geometric_model):
 
 
 def perform_kron_reduction(z_primitive):
-    z_phase_phase = z_primitive[0:3, 0:3]
-    z_phase_neutral = z_primitive[0:3, 3:]
-    z_neutral_phase = z_primitive[3:, 0:3]
-    z_neutral_neutral = z_primitive[3:, 3:]
-    z_neutral_part = z_phase_neutral * inv(z_neutral_neutral) * z_neutral_phase
-    z_abc = z_phase_phase - z_neutral_part
-    return z_abc
+    """ Reduces the primitive impedance matrix to an equivalent impedance
+        matrix.
+
+        We break z_primative up into four quadrants as follows:
+
+              Žpp = [Žaa, Žab, Žac]   Žpn = [Žan]
+                    [Žba, Žbb, Žbc]         [Žbn]
+                    [Žca, Žcb, Žcc]         [Žcn]
+
+              Žnp = [Žna, Žnb, Žnc]   Žnn = [Žnn]
+
+        Žnn is of dimension mxm, where m is the number of neutrals. E.g. with
+        m = 2:
+                                          Žan = [Žan₁,  Žan₂]
+                                                [Žbn₁,  Žbn₂]
+                                                [Žcn₁,  Žcn₂]
+
+              Žna = [Žn₁a, Žn₁b, Žn₁c]    Žnn = [Žn₁n₁, Žn₁n₂]
+                    [Žn₂a, Žn₁b, Žn₁c]          [Žn₂n₁, Žn₂n₂]
+
+        Definitions:
+        Ž ----- "primative" impedance value, i.e. one that does not factor
+                in the mutuals caused by neighboring neutral conductors.
+        Z ----- a phase-phase impedance value that factors the mutual impedance
+                of neighboring neutral conductors
+
+        Returns:
+        Z ----  a corrected impedance matrix in the form:
+
+                     Zabc = [Zaa, Zab, Zac]
+                            [Zba, Zbb, Zbc]
+                            [Zca, Zcb, Zcc]
+    """
+    Žpp, Žpn = z_primitive[0:3, 0:3], z_primitive[0:3, 3:]
+    Žnp, Žnn = z_primitive[3:,  0:3], z_primitive[3:,  3:]
+    Z_abc = Žpp - Žpn @ inv(Žnn) @ Žnp
+    return Z_abc
 
 
 class CarsonsEquations():
@@ -48,7 +77,7 @@ class CarsonsEquations():
         conductors = abc_conductors + neutral_conductors
 
         dimension = len(conductors)
-        z_primitive = matrix(zeros(shape=(dimension, dimension)), complex)
+        z_primitive = zeros(shape=(dimension, dimension), dtype=complex)
 
         for index_i, phase_i in enumerate(conductors):
             for index_j, phase_j in enumerate(conductors):

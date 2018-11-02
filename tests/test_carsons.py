@@ -1,6 +1,6 @@
 import pytest
 from numpy.testing import assert_array_almost_equal
-from numpy import array, matrix
+from numpy import array
 from carsons.carsons import (
     CarsonsEquations,
     convert_geometric_model,
@@ -155,14 +155,14 @@ class ABCN_balanced_line():
 
 
 def ABCN_line_geometry_phase_impedance():
-    return OHM_PER_MILE_TO_OHM_PER_METER * matrix([
+    return OHM_PER_MILE_TO_OHM_PER_METER * array([
             [0.3465 + 1.0179j, 0.1560 + 0.5017j, 0.1580 + 0.4236j],
             [0.1560 + 0.5017j, 0.3375 + 1.0478j, 0.1535 + 0.3849j],
             [0.1580 + 0.4236j, 0.1535 + 0.3849j, 0.3414 + 1.0348j]])
 
 
 def ABCN_line_z_primitive():
-    return matrix([
+    return array([
         [1.74792626e-04+0.00085989j,
          5.92176264e-05+0.00052913j,
          5.92176264e-05+0.00048481j,
@@ -182,7 +182,7 @@ def ABCN_line_z_primitive():
 
 
 def ABCN_balanced_z_primitive():
-    return matrix([
+    return array([
         [1.74792626e-04+0.00085989j,
          5.92176264e-05+0.00052913j,
          5.92176264e-05+0.00048481j,
@@ -203,21 +203,21 @@ def ABCN_balanced_z_primitive():
 
 
 def CBN_line_geometry_phase_impedance():
-    return OHM_PER_MILE_TO_OHM_PER_METER * matrix([
+    return OHM_PER_MILE_TO_OHM_PER_METER * array([
             [0.0000 + 0.0000j, 0.0000 + 0.0000j, 0.0000 + 0.0000j],
             [0.0000 + 0.0000j, 1.3294 + 1.3471j, 0.2066 + 0.4591j],
             [0.0000 + 0.0000j, 0.2066 + 0.4591j, 1.3238 + 1.3569j]])
 
 
 def CN_line_geometry_phase_impedance():
-    return OHM_PER_MILE_TO_OHM_PER_METER * matrix([
+    return OHM_PER_MILE_TO_OHM_PER_METER * array([
             [0.0000 + 0.0000j, 0.0000 + 0.0000j, 0.0000 + 0.0000j],
             [0.0000 + 0.0000j, 0.0000 + 0.0000j, 0.0000 + 0.0000j],
             [0.0000 + 0.0000j, 0.0000 + 0.0000j, 1.3292 + 1.3475j]])
 
 
 def CN_line_z_primitive():
-    return matrix([
+    return array([
             [0.0+0.j, 0.0+0.j, 0.0+0.j, 0.0+0.j],
             [0.0+0.j, 0.0+0.j, 0.0+0.j, 0.0+0.j],
             [0.0+0.j, 0.0+0.j, 7.5515e-04+1.006e-3j, 5.9217e-05+0.00047649j],
@@ -225,27 +225,27 @@ def CN_line_z_primitive():
 
 
 def z_primitive_no_neutral():
-    return matrix([[1.0 + 0.0j, 0.0 + 0.0j, 0.0 + 0.0j],
-                   [0.0 + 0.0j, 1.0 + 0.0j, 0.0 + 0.0j],
-                   [0.0 + 0.0j, 0.0 + 0.0j, 1.0 + 0.0j]])
+    return array([[1.0 + 0.0j, 0.0 + 0.0j, 0.0 + 0.0j],
+                  [0.0 + 0.0j, 1.0 + 0.0j, 0.0 + 0.0j],
+                  [0.0 + 0.0j, 0.0 + 0.0j, 1.0 + 0.0j]])
 
 
 def z_primitive_one_neutral():
-    return matrix([[1.0 + 0.0j, 0.0 + 0.0j, 0.0 + 0.0j, 1.0 + 0.0j],
-                   [0.0 + 0.0j, 1.0 + 0.0j, 0.0 + 0.0j, 1.0 + 0.0j],
-                   [0.0 + 0.0j, 0.0 + 0.0j, 1.0 + 0.0j, 1.0 + 0.0j],
-                   [1.0 + 0.0j, 1.0 + 0.0j, 1.0 + 0.0j, 1.0 + 0.0j]])
+    return array([[1.0 + 0.0j, 0.0 + 0.0j, 0.0 + 0.0j, 1.0 + 0.0j],
+                  [0.0 + 0.0j, 1.0 + 0.0j, 0.0 + 0.0j, 1.0 + 0.0j],
+                  [0.0 + 0.0j, 0.0 + 0.0j, 1.0 + 0.0j, 1.0 + 0.0j],
+                  [1.0 + 0.0j, 1.0 + 0.0j, 1.0 + 0.0j, 1.0 + 0.0j]])
 
 
 def expected_z_abc_one_neutral():
-    return matrix([
+    return array([
                 [0.0 + 0.0j, -1.0 + 0.0j, -1.0 + 0.0j],
                 [-1.0 + 0.0j, 0.0 + 0.0j, -1.0 + 0.0j],
                 [-1.0 + 0.0j, -1.0 + 0.0j, 0.0 + 0.0j]])
 
 
 def z_primitive_three_neutrals():
-    return matrix([
+    return array([
             [1 + 0j, 0 + 0j, 0 + 0j, 1 + 0j, 2 + 0j, 3 + 0j],
             [0 + 0j, 1 + 0j, 0 + 0j, 1 + 0j, 2 + 0j, 3 + 0j],
             [0 + 0j, 0 + 0j, 1 + 0j, 1 + 0j, 2 + 0j, 3 + 0j],
@@ -255,7 +255,7 @@ def z_primitive_three_neutrals():
 
 
 def expected_z_abc_three_neutrals():
-    return matrix([
+    return array([
                 [-13 + 0j, -14 + 0j, -14 + 0j],
                 [-14 + 0j, -13 + 0j, -14 + 0j],
                 [-14 + 0j, -14 + 0j, -13 + 0j]])
