@@ -23,23 +23,23 @@ def perform_kron_reduction(z_primitive):
 
         We break z_primative up into four quadrants as follows:
 
-              Žpp = [Žaa, Žab, Žac]   Žpn = [Žan]
-                    [Žba, Žbb, Žbc]         [Žbn]
-                    [Žca, Žcb, Žcc]         [Žcn]
+              Ẑpp = [Ẑaa, Ẑab, Ẑac]   Ẑpn = [Ẑan]
+                    [Ẑba, Ẑbb, Ẑbc]         [Ẑbn]
+                    [Ẑca, Ẑcb, Ẑcc]         [Ẑcn]
 
-              Žnp = [Žna, Žnb, Žnc]   Žnn = [Žnn]
+              Ẑnp = [Ẑna, Ẑnb, Ẑnc]   Ẑnn = [Ẑnn]
 
-        Žnn is of dimension mxm, where m is the number of neutrals. E.g. with
+        Ẑnn is of dimension mxm, where m is the number of neutrals. E.g. with
         m = 2:
-                                          Žan = [Žan₁,  Žan₂]
-                                                [Žbn₁,  Žbn₂]
-                                                [Žcn₁,  Žcn₂]
+                                          Ẑan = [Ẑan₁,  Ẑan₂]
+                                                [Ẑbn₁,  Ẑbn₂]
+                                                [Ẑcn₁,  Ẑcn₂]
 
-              Žna = [Žn₁a, Žn₁b, Žn₁c]    Žnn = [Žn₁n₁, Žn₁n₂]
-                    [Žn₂a, Žn₁b, Žn₁c]          [Žn₂n₁, Žn₂n₂]
+              Ẑna = [Ẑn₁a, Ẑn₁b, Ẑn₁c]    Ẑnn = [Ẑn₁n₁, Ẑn₁n₂]
+                    [Ẑn₂a, Ẑn₁b, Ẑn₁c]          [Ẑn₂n₁, Ẑn₂n₂]
 
         Definitions:
-        Ž ----- "primative" impedance value, i.e. one that does not factor
+        Ẑ ----- "primative" impedance value, i.e. one that does not factor
                 in the mutuals caused by neighboring neutral conductors.
         Z ----- a phase-phase impedance value that factors the mutual impedance
                 of neighboring neutral conductors
@@ -51,9 +51,9 @@ def perform_kron_reduction(z_primitive):
                             [Zba, Zbb, Zbc]
                             [Zca, Zcb, Zcc]
     """
-    Žpp, Žpn = z_primitive[0:3, 0:3], z_primitive[0:3, 3:]
-    Žnp, Žnn = z_primitive[3:,  0:3], z_primitive[3:,  3:]
-    Z_abc = Žpp - Žpn @ inv(Žnn) @ Žnp
+    Ẑpp, Ẑpn = z_primitive[0:3, 0:3], z_primitive[0:3, 3:]
+    Ẑnp, Ẑnn = z_primitive[3:,  0:3], z_primitive[3:,  3:]
+    Z_abc = Ẑpp - Ẑpn @ inv(Ẑnn) @ Ẑnp
     return Z_abc
 
 
