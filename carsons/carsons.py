@@ -8,6 +8,8 @@ from numpy import sin
 from numpy import arctan
 from itertools import islice
 
+from carsons.phase_model import Neutral, _Phase, A, B, C, N
+
 
 def convert_geometric_model(geometric_model):
     carsons_model = CarsonsEquations(geometric_model)
