@@ -71,9 +71,14 @@ class CarsonsEquations():
         self.r = model.resistance
 
     def build_z_primitive(self):
-
-        abc_conductors = [self.phases.get(ph, None) for ph in ['A', 'B', 'C']]
-        neutral_conductors = [p for ph, p in self.phases.items() if ph == 'N']
+        abc_conductors = [
+            ph if ph in self.phases
+            else None for ph in ("A", "B", "C")
+        ]
+        neutral_conductors = sorted([
+            ph for ph in self.phases
+            if ph.startswith("N")
+        ])
         conductors = abc_conductors + neutral_conductors
 
         dimension = len(conductors)
