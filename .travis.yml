@@ -6,6 +6,20 @@ jobs:
     - python: 3.6
     - python: 3.7
       dist: xenial
+    - stage: deploy
+      install: skip
+      script: true
+      after_success: true
+      before_deploy: echo $TRAVIS_TAG > carsons/VERSION
+      python: '3.6'
+      deploy:
+        provider: pypi
+        skip_cleanup: true
+        on:
+          tags: true
+        user: antonlodder
+        password:
+          secure: T0irM3QOAV+gOhrCafhUV3vC929g2i+PT/w6ACCevw3s6xf2x9wLH1NSiy6aw4bbIzd6/3+GO2RsvRK8YazoFJDP0ihdf+yb3ORxykHwwmb15YLa0CDeIzRbTXn/SLvc1OODz2Zf+gFj1l7sYhqXoQOhQROwosGljS9HjmoXM6nQ9JSKyqGz9r/0uc85GiyZeU4YzNbpn1ToJfbg7sEQU8U0HnMLdjE10iiQKvaeUxgjGqEiPDmD1h4I2ea4SZLKwGos0dEr78tIZtsXl1nJCz8iu2FBee3R9NgpTNF6tXG8GuHBOYvFE4/lUZl9G3pTAS6hdn6+tSUwbc44AQrLnBDgkDOLFnXVKUeeZSEEpJhutHoxyBSS0iV+G2AUoPhfYzJIkXe5/o/8PeeSKI3zGJ1HaUz2MaAviy96m8BmdgWyHFyNqEIlngmeamNr7U1bufZodwvd9uhS9/jcHaqbvklpczstepu8DLrpSyBsoFyeWu2Pfo9PnIwm3JmNS8lNPXOO11SAymT4Z2kr/KwCDu4GpfY7xmHa6mKSZeRww0Li0+s1Cp3uedlvOT/SlLEwBcfL+sTPyj8/uA0lt7YTWo88LDOcY6rufiECKPymSfDBg0kUojytuO+GqAJpLx2F7E3pQwd5l8Zorint/0sdlSbObqE0dRep6u9GghmCEIY=
 
 install:
   - pip install coveralls pytest-cov flake8
