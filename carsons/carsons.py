@@ -1,6 +1,7 @@
+from numpy import pi as π
+
 from numpy import zeros
 from numpy.linalg import inv
-from numpy import pi as π
 from numpy import sqrt
 from numpy import log
 from numpy import cos
@@ -73,7 +74,10 @@ class CarsonsEquations():
     def build_z_primitive(self):
 
         abc_conductors = [self.phases.get(ph, None) for ph in ['A', 'B', 'C']]
-        neutral_conductors = [p for ph, p in self.phases.items() if ph == 'N']
+        neutral_conductors = [
+            p for ph, p in self.phases.items()
+            if ph.startswith('N')
+        ]
         conductors = abc_conductors + neutral_conductors
 
         dimension = len(conductors)
