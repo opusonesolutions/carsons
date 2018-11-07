@@ -23,6 +23,7 @@ jobs:
 
 install:
   - pip install -e .[test]
+  - pip install flake8 coveralls
 script:
   - flake8
   - pytest --cov-report term-missing --cov=carsons tests/
