@@ -1,3 +1,7 @@
+.. image:: https://coveralls.io/repos/github/opusonesolutions/carsons/badge.svg?branch=master
+:target: https://coveralls.io/github/opusonesolutions/carsons?branch=master
+
+
 This is an implementation of Carson's Equations
 
 
