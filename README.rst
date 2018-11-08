@@ -1,9 +1,24 @@
 carsons
 =======
 
+.. image:: https://badge.fury.io/py/carsons.svg
+   :target: https://badge.fury.io/py/carsons
+   :alt: latest release on pypi
+.. image:: https://img.shields.io/pypi/pyversions/carsons.svg
+   :target: https://pypi.python.org/pypi/carsons
+   :alt: versons of python supported by carsons
+.. image:: https://img.shields.io/github/license/opusonesolutions/carsons.svg
+   :alt: GitHub license
+   :target: https://github.com/opusonesolutions/carsons/blob/master/LICENSE.txt
+.. image:: https://travis-ci.org/opusonesolutions/carsons.svg?branch=master
+   :target: https://travis-ci.org/opusonesolutions/carsons
+   :alt: build passing or failing
 .. image:: https://coveralls.io/repos/github/opusonesolutions/carsons/badge.svg?branch=master
    :target: https://coveralls.io/github/opusonesolutions/carsons?branch=master
-
+   :alt: test coverage
+.. image:: https://api.codeclimate.com/v1/badges/e7e872f6832da6cf6ab6/maintainability
+   :target: https://codeclimate.com/github/opusonesolutions/asciigraf/maintainability
+   :alt: maintainability
 
 This is an implementation of Carson's Equations, a mathematical model for
 deriving the equivalent impedance of an AC transmission or distribution line.
