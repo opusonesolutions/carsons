@@ -45,12 +45,12 @@ class ABCN_geometry_line():
 
     @property
     def phases(self):
-        return {
-            'A': 'A',
-            'B': 'B',
-            'C': 'C',
-            'N': 'N',
-        }
+        return [
+            'A',
+            'B',
+            'C',
+            'N',
+        ]
 
 
 class CBN_geometry_line():
@@ -81,11 +81,11 @@ class CBN_geometry_line():
 
     @property
     def phases(self):
-        return {
-            'B': 'B',
-            'C': 'C',
-            'N': 'N',
-        }
+        return [
+            'B',
+            'C',
+            'N',
+        ]
 
 
 class CN_geometry_line():
@@ -113,10 +113,10 @@ class CN_geometry_line():
 
     @property
     def phases(self):
-        return {
-            'C': 'C',
-            'N': 'N',
-        }
+        return [
+            'C',
+            'N',
+        ]
 
 
 class ABCN_balanced_line():
@@ -150,12 +150,12 @@ class ABCN_balanced_line():
 
     @property
     def phases(self):
-        return {
-            'A': 'A',
-            'B': 'B',
-            'C': 'C',
-            'N': 'N',
-        }
+        return [
+            'A',
+            'B',
+            'C',
+            'N',
+        ]
 
 
 def ABCN_line_geometry_phase_impedance():
