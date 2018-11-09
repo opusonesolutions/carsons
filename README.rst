@@ -79,10 +79,7 @@ of the conductor for that phase.
             'A' => (x, y) cross-sectional position of the conductor in meters
             ...
        }
-       phases: {
-         'A', => 'A'
-         ...
-      }
+       phases: {'A', ... }
          # map of phases 'A', 'B', 'C' and 'N<>' which are described in the
          # gmr, r and phase_positions attributes
 
