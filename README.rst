@@ -111,11 +111,11 @@ Carsons equations model an AC transmission or distribution line into an
 equivalent set of phase-phase impedances, which can be used to model the line
 in a power flow analysis.
 
-For example, say we have a 4-wire system on a utility pole, with A, B, C
-phase conductors as well as a neutral cable N. We know that when conductors
-carry electrical current, they exhibit a magnetic field --- so its pretty easy
-to imagine that, e.g., the magnetic field produced by A would interact with
-the B, C, and N conductors.
+For example, say we have a 4-wire system on a utility pole, with ``A``,
+``B``, ``C`` phase conductors as well as a neutral cable N. We know that when
+conductors carry electrical current, they exhibit a magnetic field --- so its
+pretty easy to imagine that, e.g., the magnetic field produced by ``A`` would
+interact with the ``B``, ``C``, and ``N`` conductors.
 
 ::
 
@@ -164,17 +164,17 @@ the B, C, and N conductors.
 
 
 However, each conductor also has a ground return path (or 'image') --- shown as
-A\*, B\*, C\*, and N\* in the figure above --- which is a magnetically induced
-current path in the ground. When A produceds a magnetic field, that field
-*also* interacts with B\*, C\*, N\*, *and* A\*. Carsons equations model all
+``A*``, ``B*``, ``C*``, and ``N*`` in the figure above --- which is a magnetically induced
+current path in the ground. When `A` produceds a magnetic field, that field
+*also* interacts with ``B*``, ``C*``, ``N*``, *and* ``A*``. Carsons equations model all
 these interactions and reduce them to an equivalent impedance matrix that makes
 it much easier to model this system.
 
-In addition to this, generally don't model the current flowin in the Neutral
-cable, as it is usually small enough to ignore and it reduced the scale of the
-problem. ``carsons`` implements the kron reduction to render a system of
-equivalent impedances that lets us approximate the effects of the neutral cable
-within the impedance matrix of ABC.
+
+In addition ``carsons`` implements the kron reduction, a conversion that
+approximates the impedances caused by neutral cables by incorporating them into
+the impedances for phase ``A``, ``B``, and ``C``. Since most AC and DC powerflow
+formulations don't model the neutral cable, this is a valuable simplification.
 
 References
 ----------
