@@ -15,7 +15,7 @@ OHM_PER_MILE_TO_OHM_PER_METER = 1 / 1609.344
 
 
 class ABCN_geometry_line():
-
+    """ IEEE 13 Configuration 601 Line Geometry """
     @property
     def resistance(self):
         return {
@@ -54,6 +54,7 @@ class ABCN_geometry_line():
 
 
 class CBN_geometry_line():
+    """ IEEE 13 Configuration 603 Line Geometry """
 
     @property
     def resistance(self):
@@ -89,6 +90,7 @@ class CBN_geometry_line():
 
 
 class CN_geometry_line():
+    """ IEEE 13 Configuration 605 Line Geometry"""
 
     @property
     def resistance(self):
@@ -159,6 +161,7 @@ class ABCN_balanced_line():
 
 
 def ABCN_line_geometry_phase_impedance():
+    """ IEEE 13 Configuration 601 Impedance Solution """
     return OHM_PER_MILE_TO_OHM_PER_METER * array([
             [0.3465 + 1.0179j, 0.1560 + 0.5017j, 0.1580 + 0.4236j],
             [0.1560 + 0.5017j, 0.3375 + 1.0478j, 0.1535 + 0.3849j],
@@ -207,6 +210,7 @@ def ABCN_balanced_z_primitive():
 
 
 def CBN_line_geometry_phase_impedance():
+    """ IEEE 13 Configuration 603 Impedance Solution """
     return OHM_PER_MILE_TO_OHM_PER_METER * array([
             [0.0000 + 0.0000j, 0.0000 + 0.0000j, 0.0000 + 0.0000j],
             [0.0000 + 0.0000j, 1.3294 + 1.3471j, 0.2066 + 0.4591j],
@@ -214,6 +218,7 @@ def CBN_line_geometry_phase_impedance():
 
 
 def CN_line_geometry_phase_impedance():
+    """ IEEE 13 Configuration 605 Impedance Solution """
     return OHM_PER_MILE_TO_OHM_PER_METER * array([
             [0.0000 + 0.0000j, 0.0000 + 0.0000j, 0.0000 + 0.0000j],
             [0.0000 + 0.0000j, 0.0000 + 0.0000j, 0.0000 + 0.0000j],
