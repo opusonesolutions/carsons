@@ -46,5 +46,9 @@ def test_malformed_neutrals_are_ignored():
         "pN2": (0.000367852, 0.00248107, (1.2192, 7.3152)),
     })
     model = CarsonsEquations(LINE_WITH_BAD_NEUTRAL_LABEL)
+    z_primitive = model.build_z_primitive()
 
-    assert model.build_z_primitive().shape == (4, 4)
+    assert z_primitive.shape == (4, 4)
+
+    z_expected = ABCN_line_z_primitive()
+    assert_array_almost_equal(z_primitive, z_expected, decimal=4)
