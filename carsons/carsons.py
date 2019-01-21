@@ -37,7 +37,7 @@ def perform_kron_reduction(z_primitive):
                                                 [Ẑcn₁,  Ẑcn₂]
 
               Ẑna = [Ẑn₁a, Ẑn₁b, Ẑn₁c]    Ẑnn = [Ẑn₁n₁, Ẑn₁n₂]
-                    [Ẑn₂a, Ẑn₁b, Ẑn₁c]          [Ẑn₂n₁, Ẑn₂n₂]
+                    [Ẑn₂a, Ẑn₂b, Ẑn₂c]          [Ẑn₂n₁, Ẑn₂n₂]
 
         Definitions:
         Ẑ ----- "primative" impedance value, i.e. one that does not factor
