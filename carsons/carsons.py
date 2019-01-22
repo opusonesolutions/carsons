@@ -37,7 +37,7 @@ def perform_kron_reduction(z_primitive):
                                                 [Ẑcn₁,  Ẑcn₂]
 
               Ẑna = [Ẑn₁a, Ẑn₁b, Ẑn₁c]    Ẑnn = [Ẑn₁n₁, Ẑn₁n₂]
-                    [Ẑn₂a, Ẑn₁b, Ẑn₁c]          [Ẑn₂n₁, Ẑn₂n₂]
+                    [Ẑn₂a, Ẑn₂b, Ẑn₂c]          [Ẑn₂n₁, Ẑn₂n₂]
 
         Definitions:
         Ẑ ----- "primative" impedance value, i.e. one that does not factor
@@ -72,12 +72,14 @@ class CarsonsEquations():
         self.r = model.resistance
 
     def build_z_primitive(self):
-
-        abc_conductors = [self.phases.get(ph, None) for ph in ['A', 'B', 'C']]
-        neutral_conductors = [
-            p for ph, p in self.phases.items()
-            if ph.startswith('N')
+        abc_conductors = [
+            ph if ph in self.phases
+            else None for ph in ("A", "B", "C")
         ]
+        neutral_conductors = sorted([
+            ph for ph in self.phases
+            if ph.startswith("N")
+        ])
         conductors = abc_conductors + neutral_conductors
 
         dimension = len(conductors)

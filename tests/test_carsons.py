@@ -7,11 +7,15 @@ from carsons.carsons import (
     perform_kron_reduction,
 )
 
+# `carsons` implements the model entirely in SI metric units, however this
+# conversion allows us to enter in impedance as ohm-per-mile in the test
+# harness, which means we can lift matrices directly out of the ieee test
+# network.
 OHM_PER_MILE_TO_OHM_PER_METER = 1 / 1609.344
 
 
 class ABCN_geometry_line():
-
+    """ IEEE 13 Configuration 601 Line Geometry """
     @property
     def resistance(self):
         return {
@@ -41,15 +45,16 @@ class ABCN_geometry_line():
 
     @property
     def phases(self):
-        return {
-            'A': 'A',
-            'B': 'B',
-            'C': 'C',
-            'N': 'N',
-        }
+        return [
+            'A',
+            'B',
+            'C',
+            'N',
+        ]
 
 
 class CBN_geometry_line():
+    """ IEEE 13 Configuration 603 Line Geometry """
 
     @property
     def resistance(self):
@@ -77,14 +82,15 @@ class CBN_geometry_line():
 
     @property
     def phases(self):
-        return {
-            'B': 'B',
-            'C': 'C',
-            'N': 'N',
-        }
+        return [
+            'B',
+            'C',
+            'N',
+        ]
 
 
 class CN_geometry_line():
+    """ IEEE 13 Configuration 605 Line Geometry"""
 
     @property
     def resistance(self):
@@ -109,10 +115,10 @@ class CN_geometry_line():
 
     @property
     def phases(self):
-        return {
-            'C': 'C',
-            'N': 'N',
-        }
+        return [
+            'C',
+            'N',
+        ]
 
 
 class ABCN_balanced_line():
@@ -146,15 +152,16 @@ class ABCN_balanced_line():
 
     @property
     def phases(self):
-        return {
-            'A': 'A',
-            'B': 'B',
-            'C': 'C',
-            'N': 'N',
-        }
+        return [
+            'A',
+            'B',
+            'C',
+            'N',
+        ]
 
 
 def ABCN_line_geometry_phase_impedance():
+    """ IEEE 13 Configuration 601 Impedance Solution """
     return OHM_PER_MILE_TO_OHM_PER_METER * array([
             [0.3465 + 1.0179j, 0.1560 + 0.5017j, 0.1580 + 0.4236j],
             [0.1560 + 0.5017j, 0.3375 + 1.0478j, 0.1535 + 0.3849j],
@@ -203,6 +210,7 @@ def ABCN_balanced_z_primitive():
 
 
 def CBN_line_geometry_phase_impedance():
+    """ IEEE 13 Configuration 603 Impedance Solution """
     return OHM_PER_MILE_TO_OHM_PER_METER * array([
             [0.0000 + 0.0000j, 0.0000 + 0.0000j, 0.0000 + 0.0000j],
             [0.0000 + 0.0000j, 1.3294 + 1.3471j, 0.2066 + 0.4591j],
@@ -210,6 +218,7 @@ def CBN_line_geometry_phase_impedance():
 
 
 def CN_line_geometry_phase_impedance():
+    """ IEEE 13 Configuration 605 Impedance Solution """
     return OHM_PER_MILE_TO_OHM_PER_METER * array([
             [0.0000 + 0.0000j, 0.0000 + 0.0000j, 0.0000 + 0.0000j],
             [0.0000 + 0.0000j, 0.0000 + 0.0000j, 0.0000 + 0.0000j],
