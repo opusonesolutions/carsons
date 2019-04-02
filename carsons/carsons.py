@@ -107,16 +107,17 @@ class CarsonsEquations():
         Qᵢⱼ = self.compute_Q(i, j)
         ΔX = self.μ * self.ω / π * Qᵢⱼ
 
+        # calculate geometry ratio 𝛥G
         if i != j:
             Dᵢⱼ = self.compute_D(i, j)
             dᵢⱼ = self.compute_d(i, j)
-            geometry_ratio = Dᵢⱼ / dᵢⱼ
+            𝛥G = Dᵢⱼ / dᵢⱼ
         else:
             hᵢ = self.get_h(i)
             gmrⱼ = self.gmr[j]
-            geometry_ratio = 2.0 * hᵢ / gmrⱼ
+            𝛥G = 2.0 * hᵢ / gmrⱼ
 
-        X_o = self.ω * self.μ / (2 * π) * log(geometry_ratio)
+        X_o = self.ω * self.μ / (2 * π) * log(𝛥G)
 
         return X_o + ΔX
 
