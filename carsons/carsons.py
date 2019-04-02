@@ -184,3 +184,12 @@ class CarsonsEquations():
     def get_h(self, i):
         _, yᵢ = self.phase_positions[i]
         return yᵢ
+
+
+class ConcentricNeutralCarsonsEquations(CarsonsEquations):
+    def __init__(self, *args, **kwargs):
+        return
+
+    @property
+    def impedance(self):
+        return zeros(shape=(3, 3), dtype=complex)
