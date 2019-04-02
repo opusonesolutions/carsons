@@ -8,6 +8,7 @@ from numpy import cos
 from numpy import sin
 from numpy import arctan
 from itertools import islice
+from collections import defaultdict
 
 
 def convert_geometric_model(geometric_model):
@@ -173,6 +174,7 @@ class CarsonsEquations():
 
     def compute_D(self, i, j):
         xⱼ, yⱼ = self.phase_positions[j]
+
         return self.calculate_distance(self.phase_positions[i], (xⱼ, -yⱼ))
 
     @staticmethod
@@ -187,9 +189,49 @@ class CarsonsEquations():
 
 
 class ConcentricNeutralCarsonsEquations(CarsonsEquations):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, model, *args, **kwargs):
+        super().__init__(model)
+        self.diameterᵢ = model.diameter_over_neutral
+        self.diameterₙᵢ = model.neutral_strand_diameter
+        self.strand_countₙᵢ = defaultdict(lambda: None, model.neutral_strand_count)
+        self.neutral_strand_resistance = model.neutral_strand_resistance
+        self.radius = defaultdict(lambda: None, {
+            phase: (diameter_over_neutral - model.neutral_strand_diameter[phase]) / 2
+            for phase, diameter_over_neutral in model.diameter_over_neutral.items()
+        })
+        self.gmr.update({
+            phase: GMR_cn(
+                model.neutral_strand_geometric_mean_radius[phase],
+                model.neutral_strand_count[phase],
+                self.radius[phase]
+            ) for phase, diameter_over_neutral in model.diameter_over_neutral.items()
+        })
+        self.r.update({
+            phase: resistance / model.neutral_strand_count[phase]
+            for phase, resistance in model.neutral_strand_resistance.items()
+        })
         return
+
+    def compute_d(self, i, j):
+        I, J = set(i), set(j)
+        r = self.radius[i] or self.radius[j]
+        if I ^ J == set('N') and 'N' not in I & J:
+            return r
+
+        distance_ij = self.calculate_distance(self.phase_positions[i], self.phase_positions[j])
+        if not I & J and 'N' in I ^ J:
+            k = self.strand_countₙᵢ[i] or self.strand_countₙᵢ[j]
+            return (distance_ij ** k - r ** k) ** (1 / k)
+        else:
+            return distance_ij
+
 
     @property
     def impedance(self):
-        return zeros(shape=(3, 3), dtype=complex)
+        z_primitive = self.build_z_primitive()
+        z_abc = perform_kron_reduction(z_primitive)
+        return z_abc
+
+
+def GMR_cn(GMR_s, k, R):
+    return (GMR_s * k * R**(k-1))**(1/k)

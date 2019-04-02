@@ -7,10 +7,12 @@ from carsons.carsons import ConcentricNeutralCarsonsEquations
 
 from tests.test_carsons import OHM_PER_MILE_TO_OHM_PER_METER
 
-feet = pint.UnitRegistry().feet
-inches = pint.UnitRegistry().inches
-miles = pint.UnitRegistry().miles
-ohms = pint.UnitRegistry().ohms
+ureg = pint.UnitRegistry()
+
+feet = ureg.feet
+inches = ureg.inches
+miles = ureg.miles
+ohms = ureg.ohms
 
 
 def GMR_cn(GMR_s, k, R):
@@ -24,60 +26,73 @@ class ABCCable:
     @property
     def neutral_strand_geometric_mean_radius(self):
         return {
-            'NA': 0.00208*feet.to('meters'),
-            'NB': 0.00208*feet.to('meters'),
-            'NC': 0.00208*feet.to('meters'),
+            'NA': (0.00208*feet).to('meters').magnitude,
+            'NB': (0.00208*feet).to('meters').magnitude,
+            'NC': (0.00208*feet).to('meters').magnitude,
         }
 
+    @property
     def neutral_strand_resistance(self):
         return {
-            'NA': (14.87*ohms / miles).to('ohm / meters'),
-            'NB': (14.87*ohms / miles).to('ohm / meters'),
-            'NC': (14.87*ohms / miles).to('ohm / meters'),
+            'NA': (14.87*ohms / miles).to('ohm / meters').magnitude,
+            'NB': (14.87*ohms / miles).to('ohm / meters').magnitude,
+            'NC': (14.87*ohms / miles).to('ohm / meters').magnitude,
         }
 
     @property
     def neutral_strand_diameter(self):
         return {
-            'NA': 0.0641*inches.to('meters'),
-            'NB': 0.0641*inches.to('meters'),
-            'NC': 0.0641*inches.to('meters'),
+            'NA': (0.0641*inches).to('meters').magnitude,
+            'NB': (0.0641*inches).to('meters').magnitude,
+            'NC': (0.0641*inches).to('meters').magnitude,
         }
 
     @property
     def diameter_over_neutral(self):
         return {
-            'A': 1.29*inches.to('meters'),
-            'B': 1.29*inches.to('meters'),
-            'C': 1.29*inches.to('meters'),
+            'NA': (1.29*inches).to('meters').magnitude,
+            'NB': (1.29*inches).to('meters').magnitude,
+            'NC': (1.29*inches).to('meters').magnitude,
         }
 
     @property
     def resistance(self):
         return {
-            'A': (0.4100*ohms / miles).to('ohm / meters'),
-            'B': (0.4100*ohms / miles).to('ohm / meters'),
-            'C': (0.4100*ohms / miles).to('ohm / meters'),
+            'A': (0.4100*(ohms / miles)).to('ohm / meters').magnitude,
+            'B': (0.4100*(ohms / miles)).to('ohm / meters').magnitude,
+            'C': (0.4100*(ohms / miles)).to('ohm / meters').magnitude,
         }
 
     @property
     def geometric_mean_radius(self):
         return {
-            'A': 0.0171*feet.to('meters'),
-            'B': 0.0171*feet.to('meters'),
-            'C': 0.0171*feet.to('meters'),
+            'A': (0.0171*feet).to('meters').magnitude,
+            'B': (0.0171*feet).to('meters').magnitude,
+            'C': (0.0171*feet).to('meters').magnitude,
         }
 
     @property
-    def wire_position(self):
+    def wire_positions(self):
         return {
-            'A': 0,
-            'B': 6*inches.to('meters'),
-            'C': 12*inches.to('meters'),
-            'NA': 0,
-            'NB': 6*inches.to('meters'),
-            'NC': 12*inches.to('meters'),
+            'A': (0, 0),
+            'B': ((6*inches).to('meters').magnitude, 0),
+            'C': ((12*inches).to('meters').magnitude, 0),
+            'NA': (0, 0),
+            'NB': ((6*inches).to('meters').magnitude, 0),
+            'NC': ((12*inches).to('meters').magnitude, 0),
         }
+
+    @property
+    def neutral_strand_count(self):
+        return {
+            'NA': 13,
+            'NB': 13,
+            'NC': 13,
+        }
+
+    @property
+    def phases(self):
+        return ['A', 'B', 'C', 'NA', 'NB', 'NC']
 
 
 def test_concentric_neutral_cable():
