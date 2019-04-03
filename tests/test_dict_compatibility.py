@@ -1,6 +1,6 @@
 from numpy.testing import assert_array_almost_equal
 
-from .test_carsons import ABCN_line_z_primitive
+from .test_carsons import ACBN_line_z_primitive
 from carsons.carsons import CarsonsEquations
 
 
@@ -41,6 +41,6 @@ def test_compatibility_with_dict_of_phases():
     z_primative = CarsonsEquations(model).build_z_primitive()
     assert_array_almost_equal(
         z_primative,
-        ABCN_line_z_primitive(),
+        ACBN_line_z_primitive(),
         decimal=4
     )
