@@ -1,13 +1,8 @@
 from collections import defaultdict
 from itertools import islice
 
-from numpy import arctan
-from numpy import cos
-from numpy import log
+from numpy import arctan, cos, log, sin, sqrt, zeros
 from numpy import pi as π
-from numpy import sin
-from numpy import sqrt
-from numpy import zeros
 from numpy.linalg import inv
 
 
@@ -193,18 +188,22 @@ class ConcentricNeutralCarsonsEquations(CarsonsEquations):
         super().__init__(model)
         self.diameterᵢ = model.diameter_over_neutral
         self.diameterₙᵢ = model.neutral_strand_diameter
-        self.strand_countₙᵢ = defaultdict(lambda: None, model.neutral_strand_count)
+        self.strand_countₙᵢ = defaultdict(
+            lambda: None, model.neutral_strand_count)
         self.neutral_strand_resistance = model.neutral_strand_resistance
         self.radius = defaultdict(lambda: None, {
-            phase: (diameter_over_neutral - model.neutral_strand_diameter[phase]) / 2
-            for phase, diameter_over_neutral in model.diameter_over_neutral.items()
+            phase: (diameter_over_neutral -
+                    model.neutral_strand_diameter[phase]) / 2
+            for phase, diameter_over_neutral
+            in model.diameter_over_neutral.items()
         })
         self.gmr.update({
             phase: GMR_cn(
                 model.neutral_strand_geometric_mean_radius[phase],
                 model.neutral_strand_count[phase],
                 self.radius[phase]
-            ) for phase, diameter_over_neutral in model.diameter_over_neutral.items()
+            ) for phase, diameter_over_neutral
+            in model.diameter_over_neutral.items()
         })
         self.r.update({
             phase: resistance / model.neutral_strand_count[phase]
@@ -218,7 +217,8 @@ class ConcentricNeutralCarsonsEquations(CarsonsEquations):
         if I ^ J == set('N') and 'N' not in I & J:
             return r
 
-        distance_ij = self.calculate_distance(self.phase_positions[i], self.phase_positions[j])
+        distance_ij = self.calculate_distance(self.phase_positions[i],
+                                              self.phase_positions[j])
         if not I & J and 'N' in I ^ J:
             # approximate by modelling the concentric neutral cables as one
             # equivalent conductor directly above the phase conductor
