@@ -182,13 +182,18 @@ class CarsonsEquations():
         _, yᵢ = self.phase_positions[i]
         return yᵢ
 
+    @property
+    def impedance(self):
+        z_primitive = self.build_z_primitive()
+        z_abc = perform_kron_reduction(z_primitive)
+        return z_abc
+
 
 class ConcentricNeutralCarsonsEquations(CarsonsEquations):
     def __init__(self, model, *args, **kwargs):
         super().__init__(model)
-        self.diameterᵢ = model.diameter_over_neutral
-        self.diameterₙᵢ = model.neutral_strand_diameter
-        self.strand_countₙᵢ = defaultdict(
+        self.neutral_strand_gmr = model.neutral_strand_gmr
+        self.neutral_strand_count = defaultdict(
             lambda: None, model.neutral_strand_count)
         self.neutral_strand_resistance = model.neutral_strand_resistance
         self.radius = defaultdict(lambda: None, {
@@ -198,12 +203,7 @@ class ConcentricNeutralCarsonsEquations(CarsonsEquations):
             in model.diameter_over_neutral.items()
         })
         self.gmr.update({
-            phase: GMR_cn(
-                model.neutral_strand_geometric_mean_radius[phase],
-                model.neutral_strand_count[phase],
-                self.radius[phase]
-            ) for phase, diameter_over_neutral
-            in model.diameter_over_neutral.items()
+            phase: self.GMR_cn(phase) for phase in model.diameter_over_neutral.keys()
         })
         self.r.update({
             phase: resistance / model.neutral_strand_count[phase]
@@ -226,11 +226,11 @@ class ConcentricNeutralCarsonsEquations(CarsonsEquations):
         else:
             return distance_ij
 
-    def compute_P_terms(self, i, j):
-        yield π / 8.0
+    def compute_P(self, i, j, number_of_terms=1):
+        return super().compute_P(i, j, 1)
 
     def compute_X(self, i, j):
-        Q_first_term = -0.0386
+        Q_first_term = super().compute_Q(i, j, 1)
 
         # Simplify equations and don't compute Dᵢⱼ explicitly
         kᵢⱼ_Dᵢⱼ_ratio = sqrt(self.ω * self.μ / self.ρ)
@@ -243,12 +243,8 @@ class ConcentricNeutralCarsonsEquations(CarsonsEquations):
 
         return (X_o + ΔX) * self.ω * self.μ / (2 * π)
 
-    @property
-    def impedance(self):
-        z_primitive = self.build_z_primitive()
-        z_abc = perform_kron_reduction(z_primitive)
-        return z_abc
-
-
-def GMR_cn(GMR_s, k, R):
-    return (GMR_s * k * R**(k-1))**(1/k)
+    def GMR_cn(self, phase):
+        GMR_s = self.neutral_strand_gmr[phase]
+        k = self.neutral_strand_count[phase]
+        R = self.radius[phase]
+        return (GMR_s * k * R**(k-1))**(1/k)

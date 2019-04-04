@@ -13,16 +13,12 @@ miles = ureg.miles
 ohms = ureg.ohms
 
 
-def GMR_cn(GMR_s, k, R):
-    return (GMR_s * k * R**(k-1))**(1/k)
-
-
 class ABCCable:
     """ Modelled after Kerstings 'Distribution System Modeling and Analysis'
         pg. 102 example """
 
     @property
-    def neutral_strand_geometric_mean_radius(self):
+    def neutral_strand_gmr(self):
         return {
             'NA': (0.00208*feet).to('meters').magnitude,
             'NB': (0.00208*feet).to('meters').magnitude,
