@@ -1,14 +1,14 @@
-from numpy import pi as π
+from collections import defaultdict
+from itertools import islice
 
+from numpy import arctan
+from numpy import cos
+from numpy import log
+from numpy import pi as π
+from numpy import sin
+from numpy import sqrt
 from numpy import zeros
 from numpy.linalg import inv
-from numpy import sqrt
-from numpy import log
-from numpy import cos
-from numpy import sin
-from numpy import arctan
-from itertools import islice
-from collections import defaultdict
 
 
 def convert_geometric_model(geometric_model):
@@ -220,11 +220,28 @@ class ConcentricNeutralCarsonsEquations(CarsonsEquations):
 
         distance_ij = self.calculate_distance(self.phase_positions[i], self.phase_positions[j])
         if not I & J and 'N' in I ^ J:
-            k = self.strand_countₙᵢ[i] or self.strand_countₙᵢ[j]
-            return (distance_ij ** k - r ** k) ** (1 / k)
+            # approximate by modelling the concentric neutral cables as one
+            # equivalent conductor directly above the phase conductor
+            return (distance_ij**2 + r**2) ** 0.5
         else:
             return distance_ij
 
+    def compute_P_terms(self, i, j):
+        yield π / 8.0
+
+    def compute_X(self, i, j):
+        Q_first_term = -0.0386
+
+        # Simplify equations and don't compute Dᵢⱼ explicitly
+        kᵢⱼ_Dᵢⱼ_ratio = sqrt(self.ω * self.μ / self.ρ)
+        ΔX = Q_first_term * 2 + log(2)
+
+        if i == j:
+            X_o = -log(self.gmr[i]) - log(kᵢⱼ_Dᵢⱼ_ratio)
+        else:
+            X_o = -log(self.compute_d(i, j)) - log(kᵢⱼ_Dᵢⱼ_ratio)
+
+        return (X_o + ΔX) * self.ω * self.μ / (2 * π)
 
     @property
     def impedance(self):

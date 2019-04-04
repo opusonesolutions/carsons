@@ -1,10 +1,8 @@
 import pint
-
 from numpy import array
 from numpy.testing import assert_array_almost_equal
 
 from carsons.carsons import ConcentricNeutralCarsonsEquations
-
 from tests.test_carsons import OHM_PER_MILE_TO_OHM_PER_METER
 
 ureg = pint.UnitRegistry()
@@ -105,5 +103,6 @@ def test_concentric_neutral_cable():
             [0.3188 + 1j*0.0334, 0.7890 + 1j*0.4048, 0.3188 + 1j*0.0334],
             [0.2848 + 1j*0.0138, 0.3188 + 1j*0.0334, 0.7981 + 1j*0.4467],
 
-        ]) * OHM_PER_MILE_TO_OHM_PER_METER
+        ]) * OHM_PER_MILE_TO_OHM_PER_METER,
+        decimal=4
     )
