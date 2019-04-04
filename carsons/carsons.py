@@ -202,8 +202,13 @@ class ConcentricNeutralCarsonsEquations(CarsonsEquations):
             for phase, diameter_over_neutral
             in model.diameter_over_neutral.items()
         })
+        self.phase_positions.update({
+            f"N{phase}": self.phase_positions[phase]
+            for phase in self.phase_positions.keys()
+        })
         self.gmr.update({
-            phase: self.GMR_cn(phase) for phase in model.diameter_over_neutral.keys()
+            phase: self.GMR_cn(phase)
+            for phase in model.diameter_over_neutral.keys()
         })
         self.r.update({
             phase: resistance / model.neutral_strand_count[phase]

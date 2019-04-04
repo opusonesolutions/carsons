@@ -71,9 +71,6 @@ class ABCCable:
             'A': (0, 0),
             'B': ((6*inches).to('meters').magnitude, 0),
             'C': ((12*inches).to('meters').magnitude, 0),
-            'NA': (0, 0),
-            'NB': ((6*inches).to('meters').magnitude, 0),
-            'NC': ((12*inches).to('meters').magnitude, 0),
         }
 
     @property
