@@ -38,9 +38,5 @@ def test_compatibility_with_dict_of_phases():
 
     model = BackwardsCompatibleModel()
 
-    z_primative = CarsonsEquations(model).build_z_primitive()
-    assert_array_almost_equal(
-        z_primative,
-        ACBN_line_z_primitive(),
-        decimal=4
-    )
+    z_primitive = CarsonsEquations(model).build_z_primitive()
+    assert_array_almost_equal(z_primitive, ACBN_line_z_primitive())
