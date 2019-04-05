@@ -3,7 +3,7 @@ from numpy.testing import assert_array_almost_equal
 
 from carsons.carsons import CarsonsEquations
 from tests.helpers import LineModel
-from tests.test_carsons import ABCN_line_z_primitive
+from tests.test_carsons import ACBN_line_z_primitive
 
 
 def test_dual_neutral_model():
@@ -31,7 +31,7 @@ def test_dual_neutral_model():
     z_equivalent = z_primitive.copy()
     z_equivalent = numpy.delete(z_equivalent, 2, 0)
     z_equivalent = numpy.delete(z_equivalent, 2, 1)
-    z_expected = ABCN_line_z_primitive()
+    z_expected = ACBN_line_z_primitive()
     assert_array_almost_equal(z_equivalent, z_expected, decimal=4)
 
 
@@ -50,5 +50,5 @@ def test_malformed_neutrals_are_ignored():
 
     assert z_primitive.shape == (4, 4)
 
-    z_expected = ABCN_line_z_primitive()
+    z_expected = ACBN_line_z_primitive()
     assert_array_almost_equal(z_primitive, z_expected, decimal=4)

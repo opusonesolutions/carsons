@@ -14,14 +14,14 @@ from carsons.carsons import (
 OHM_PER_MILE_TO_OHM_PER_METER = 1 / 1609.344
 
 
-class ABCN_geometry_line():
+class ACBN_geometry_line():
     """ IEEE 13 Configuration 601 Line Geometry """
     @property
     def resistance(self):
         return {
             'A': 0.000115575,
-            'B': 0.000115575,
             'C': 0.000115575,
+            'B': 0.000115575,
             'N': 0.000367852,
         }
 
@@ -29,8 +29,8 @@ class ABCN_geometry_line():
     def geometric_mean_radius(self):
         return {
             'A': 0.00947938,
-            'B': 0.00947938,
             'C': 0.00947938,
+            'B': 0.00947938,
             'N': 0.00248107,
         }
 
@@ -38,8 +38,8 @@ class ABCN_geometry_line():
     def wire_positions(self):
         return {
             'A': (0.762, 8.5344),
-            'B': (2.1336, 8.5344),
-            'C': (0, 8.5344),
+            'C': (2.1336, 8.5344),
+            'B': (0, 8.5344),
             'N': (1.2192, 7.3152),
         }
 
@@ -47,8 +47,8 @@ class ABCN_geometry_line():
     def phases(self):
         return [
             'A',
-            'B',
             'C',
+            'B',
             'N',
         ]
 
@@ -160,7 +160,7 @@ class ABCN_balanced_line():
         ]
 
 
-def ABCN_line_geometry_phase_impedance():
+def ACBN_line_geometry_phase_impedance():
     """ IEEE 13 Configuration 601 Impedance Solution """
     return OHM_PER_MILE_TO_OHM_PER_METER * array([
             [0.3465 + 1.0179j, 0.1560 + 0.5017j, 0.1580 + 0.4236j],
@@ -168,7 +168,7 @@ def ABCN_line_geometry_phase_impedance():
             [0.1580 + 0.4236j, 0.1535 + 0.3849j, 0.3414 + 1.0348j]])
 
 
-def ABCN_line_z_primitive():
+def ACBN_line_z_primitive():
     return array([
         [1.74792626e-04+0.00085989j,
          5.92176264e-05+0.00052913j,
@@ -272,19 +272,18 @@ def expected_z_abc_three_neutrals():
 
 @pytest.mark.parametrize(
     "line,expected_impedance",
-    [(ABCN_geometry_line(), ABCN_line_geometry_phase_impedance()),
+    [(ACBN_geometry_line(), ACBN_line_geometry_phase_impedance()),
      (CBN_geometry_line(), CBN_line_geometry_phase_impedance()),
      (CN_geometry_line(), CN_line_geometry_phase_impedance())])
 def test_converts_geometry_to_phase_impedance(line, expected_impedance):
     actual_impedance = convert_geometric_model(line)
     assert_array_almost_equal(expected_impedance,
-                              actual_impedance,
-                              decimal=4)
+                              actual_impedance)
 
 
 @pytest.mark.parametrize(
     "line,z_primitive_expected",
-    [(ABCN_geometry_line(), ABCN_line_z_primitive()),
+    [(ACBN_geometry_line(), ACBN_line_z_primitive()),
      (CN_geometry_line(), CN_line_z_primitive())])
 def test_unbalanced_carsons_equations(line, z_primitive_expected):
     model = CarsonsEquations(line)
