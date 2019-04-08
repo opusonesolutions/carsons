@@ -86,6 +86,44 @@ class ABCCable:
         return ['A', 'B', 'C', 'NA', 'NB', 'NC']
 
 
+class IEEE37_Cable(ABCCable):
+    """
+    Config 723 in IEEE37
+    """
+
+    @property
+    def diameter_over_neutral(self):
+        return {
+            'NA': (1.10*inches).to('meters').magnitude,
+            'NB': (1.10*inches).to('meters').magnitude,
+            'NC': (1.10*inches).to('meters').magnitude,
+        }
+
+    @property
+    def resistance(self):
+        return {
+            'A': (0.7690*(ohms / miles)).to('ohm / meters').magnitude,
+            'B': (0.7690*(ohms / miles)).to('ohm / meters').magnitude,
+            'C': (0.7690*(ohms / miles)).to('ohm / meters').magnitude,
+        }
+
+    @property
+    def geometric_mean_radius(self):
+        return {
+            'A': (0.0125*feet).to('meters').magnitude,
+            'B': (0.0125*feet).to('meters').magnitude,
+            'C': (0.0125*feet).to('meters').magnitude,
+        }
+
+    @property
+    def neutral_strand_count(self):
+        return {
+            'NA': 7,
+            'NB': 7,
+            'NC': 7,
+        }
+
+
 def test_concentric_neutral_cable():
     model = ConcentricNeutralCarsonsEquations(ABCCable())
 
@@ -95,6 +133,21 @@ def test_concentric_neutral_cable():
             [0.7981 + 1j*0.4467, 0.3188 + 1j*0.0334, 0.2848 + 1j*0.0138],
             [0.3188 + 1j*0.0334, 0.7890 + 1j*0.4048, 0.3188 + 1j*0.0334],
             [0.2848 + 1j*0.0138, 0.3188 + 1j*0.0334, 0.7981 + 1j*0.4467],
+
+        ]) * OHM_PER_MILE_TO_OHM_PER_METER,
+        decimal=4
+    )
+
+
+def test_concentric_neutral_cable_IEEE37():
+    model = ConcentricNeutralCarsonsEquations(IEEE37_Cable())
+
+    assert_array_almost_equal(
+        model.impedance,
+        array([
+            [1.2936 + 1j*0.6713, 0.4871 + 1j*0.2111, 0.4585 + 1j*0.1521],
+            [0.4871 + 1j*0.2111, 1.3022 + 1j*0.6326, 0.4871 + 1j*0.2111],
+            [0.4585 + 1j*0.1521, 0.4871 + 1j*0.2111, 1.2936 + 1j*0.6713],
 
         ]) * OHM_PER_MILE_TO_OHM_PER_METER,
         decimal=4
