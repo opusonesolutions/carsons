@@ -16,9 +16,6 @@ ohms = ureg.ohms
 
 def test_concentric_neutral_cable():
     model = ConcentricNeutralCarsonsEquations(LineModel({
-        #    resistance   gmr         (x, y)
-        #
-        #   ==========================================
         "A": {
             'resistance': (0.4100*(ohms / miles)).to('ohm / meters').magnitude,
             'gmr': (0.0171*feet).to('meters').magnitude,
@@ -37,28 +34,29 @@ def test_concentric_neutral_cable():
 
         "NA": {
             'neutral_strand_gmr': (0.00208*feet).to('meters').magnitude,
-            'neutral_strand_resistance': (14.87*ohms / miles).to('ohm / meters').magnitude,
+            'neutral_strand_resistance':
+                (14.87*ohms / miles).to('ohm / meters').magnitude,
             'neutral_strand_diameter': (0.0641*inches).to('meters').magnitude,
             'diameter_over_neutral': (1.29*inches).to('meters').magnitude,
             'neutral_strand_count': 13,
         },
         "NB": {
             'neutral_strand_gmr': (0.00208*feet).to('meters').magnitude,
-            'neutral_strand_resistance': (14.87*ohms / miles).to('ohm / meters').magnitude,
+            'neutral_strand_resistance':
+                (14.87*ohms / miles).to('ohm / meters').magnitude,
             'neutral_strand_diameter': (0.0641*inches).to('meters').magnitude,
             'diameter_over_neutral': (1.29*inches).to('meters').magnitude,
             'neutral_strand_count': 13,
         },
         "NC": {
             'neutral_strand_gmr': (0.00208*feet).to('meters').magnitude,
-            'neutral_strand_resistance': (14.87*ohms / miles).to('ohm / meters').magnitude,
+            'neutral_strand_resistance':
+                (14.87*ohms / miles).to('ohm / meters').magnitude,
             'neutral_strand_diameter': (0.0641*inches).to('meters').magnitude,
             'diameter_over_neutral': (1.29*inches).to('meters').magnitude,
             'neutral_strand_count': 13,
         },
     }))
-
-    # model = ConcentricNeutralCarsonsEquations(ABCCable())
 
     assert_array_almost_equal(
         model.impedance,
@@ -74,37 +72,37 @@ def test_concentric_neutral_cable():
 
 def test_concentric_neutral_cable_IEEE37():
     model = ConcentricNeutralCarsonsEquations(LineModel({
-        #    resistance   gmr         (x, y)
-        #
-        #   ==========================================
         "A": {
-            'resistance': (0.7690 * (ohms / miles)).to('ohm / meters').magnitude,
+            'resistance': (0.7690 * (ohms/miles)).to('ohm / meters').magnitude,
             'gmr': (0.0125 * feet).to('meters').magnitude,
             'wire_positions': (0, 0)},
         "B": {
-            'resistance': (0.7690 * (ohms / miles)).to('ohm / meters').magnitude,
+            'resistance': (0.7690 * (ohms/miles)).to('ohm / meters').magnitude,
             'gmr': (0.0125 * feet).to('meters').magnitude,
             'wire_positions': ((6 * inches).to('meters').magnitude, 0)},
         "C": {
-            'resistance': (0.7690 * (ohms / miles)).to('ohm / meters').magnitude,
+            'resistance': (0.7690 * (ohms/miles)).to('ohm / meters').magnitude,
             'gmr': (0.0125 * feet).to('meters').magnitude,
             'wire_positions': ((12 * inches).to('meters').magnitude, 0)},
 
         "NA": {
             'neutral_strand_gmr': (0.00208 * feet).to('meters').magnitude,
-            'neutral_strand_resistance': (14.87 * ohms / miles).to('ohm / meters').magnitude,
+            'neutral_strand_resistance':
+                (14.87 * ohms / miles).to('ohm / meters').magnitude,
             'neutral_strand_diameter': (0.0641 * inches).to('meters').magnitude,
             'diameter_over_neutral': (1.10 * inches).to('meters').magnitude,
             'neutral_strand_count': 7, },
         "NB": {
             'neutral_strand_gmr': (0.00208 * feet).to('meters').magnitude,
-            'neutral_strand_resistance': (14.87 * ohms / miles).to('ohm / meters').magnitude,
+            'neutral_strand_resistance':
+                (14.87 * ohms / miles).to('ohm / meters').magnitude,
             'neutral_strand_diameter': (0.0641 * inches).to('meters').magnitude,
             'diameter_over_neutral': (1.10 * inches).to('meters').magnitude,
             'neutral_strand_count': 7, },
         "NC": {
             'neutral_strand_gmr': (0.00208 * feet).to('meters').magnitude,
-            'neutral_strand_resistance': (14.87 * ohms / miles).to('ohm / meters').magnitude,
+            'neutral_strand_resistance':
+                (14.87 * ohms / miles).to('ohm / meters').magnitude,
             'neutral_strand_diameter': (0.0641 * inches).to('meters').magnitude,
             'diameter_over_neutral': (1.10 * inches).to('meters').magnitude,
             'neutral_strand_count': 7, }, }))
