@@ -3,7 +3,7 @@ from numpy import array
 from numpy.testing import assert_array_almost_equal
 
 from carsons.carsons import ConcentricNeutralCarsonsEquations
-from tests.helpers import LineModel
+from tests.helpers import ConcentricLineModel
 from tests.test_carsons import OHM_PER_MILE_TO_OHM_PER_METER
 
 ureg = pint.UnitRegistry()
@@ -15,7 +15,7 @@ ohms = ureg.ohms
 
 
 def test_concentric_neutral_cable():
-    model = ConcentricNeutralCarsonsEquations(LineModel({
+    model = ConcentricNeutralCarsonsEquations(ConcentricLineModel({
         "A": {
             'resistance': (0.4100*(ohms / miles)).to('ohm / meters').magnitude,
             'gmr': (0.0171*feet).to('meters').magnitude,
@@ -71,7 +71,7 @@ def test_concentric_neutral_cable():
 
 
 def test_concentric_neutral_cable_IEEE37():
-    model = ConcentricNeutralCarsonsEquations(LineModel({
+    model = ConcentricNeutralCarsonsEquations(ConcentricLineModel({
         "A": {
             'resistance': (0.7690 * (ohms/miles)).to('ohm / meters').magnitude,
             'gmr': (0.0125 * feet).to('meters').magnitude,
