@@ -43,9 +43,9 @@ class ConcentricLineModel:
         for phase, val in conductors.items():
             if 'N' in phase:
                 self._neutral_strand_gmr[phase] = val['neutral_strand_gmr']
-                self._neutral_strand_resistance[phase] = val['neutral_strand_resistance']
-                self._neutral_strand_diameter[phase] = val['neutral_strand_diameter']
-                self._diameter_over_neutral[phase] = val['diameter_over_neutral']
+                self._neutral_strand_resistance[phase] = val['neutral_strand_resistance']   # noqa 401
+                self._neutral_strand_diameter[phase] = val['neutral_strand_diameter']       # noqa 401
+                self._diameter_over_neutral[phase] = val['diameter_over_neutral']           # noqa 401
                 self._neutral_strand_count[phase] = val['neutral_strand_count']
             else:
                 self._resistance[phase] = val['resistance']

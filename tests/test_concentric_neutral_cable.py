@@ -89,21 +89,21 @@ def test_concentric_neutral_cable_IEEE37():
             'neutral_strand_gmr': (0.00208 * feet).to('meters').magnitude,
             'neutral_strand_resistance':
                 (14.87 * ohms / miles).to('ohm / meters').magnitude,
-            'neutral_strand_diameter': (0.0641 * inches).to('meters').magnitude,
+            'neutral_strand_diameter': (0.0641*inches).to('meters').magnitude,
             'diameter_over_neutral': (1.10 * inches).to('meters').magnitude,
             'neutral_strand_count': 7, },
         "NB": {
             'neutral_strand_gmr': (0.00208 * feet).to('meters').magnitude,
             'neutral_strand_resistance':
                 (14.87 * ohms / miles).to('ohm / meters').magnitude,
-            'neutral_strand_diameter': (0.0641 * inches).to('meters').magnitude,
+            'neutral_strand_diameter': (0.0641*inches).to('meters').magnitude,
             'diameter_over_neutral': (1.10 * inches).to('meters').magnitude,
             'neutral_strand_count': 7, },
         "NC": {
             'neutral_strand_gmr': (0.00208 * feet).to('meters').magnitude,
             'neutral_strand_resistance':
                 (14.87 * ohms / miles).to('ohm / meters').magnitude,
-            'neutral_strand_diameter': (0.0641 * inches).to('meters').magnitude,
+            'neutral_strand_diameter': (0.0641*inches).to('meters').magnitude,
             'diameter_over_neutral': (1.10 * inches).to('meters').magnitude,
             'neutral_strand_count': 7, }, }))
 
