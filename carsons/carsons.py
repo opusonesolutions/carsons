@@ -239,9 +239,6 @@ class ConcentricNeutralCarsonsEquations(CarsonsEquations):
             # Distance between two neutral/phase conductors
             return distance_ij
 
-    def compute_P(self, i, j, number_of_terms=1):
-        return super().compute_P(i, j, 1)
-
     def compute_X(self, i, j):
         Q_first_term = super().compute_Q(i, j, 1)
 
