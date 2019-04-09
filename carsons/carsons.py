@@ -219,16 +219,24 @@ class ConcentricNeutralCarsonsEquations(CarsonsEquations):
     def compute_d(self, i, j):
         I, J = set(i), set(j)
         r = self.radius[i] or self.radius[j]
-        if I ^ J == set('N') and 'N' not in I & J:
+
+        one_neutral_same_phase = I ^ J == set('N')
+        different_phase = not I & J
+        one_neutral = 'N' in I ^ J
+
+        if one_neutral_same_phase:
+            # Distance between a neutral/phase conductor of same phase
             return r
 
         distance_ij = self.calculate_distance(self.phase_positions[i],
                                               self.phase_positions[j])
-        if not I & J and 'N' in I ^ J:
+        if different_phase and one_neutral:
+            # Distance between a neutral/phase conductor of different phase
             # approximate by modelling the concentric neutral cables as one
             # equivalent conductor directly above the phase conductor
             return (distance_ij**2 + r**2) ** 0.5
         else:
+            # Distance between two neutral/phase conductors
             return distance_ij
 
     def compute_P(self, i, j, number_of_terms=1):
