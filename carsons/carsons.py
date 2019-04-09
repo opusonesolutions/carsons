@@ -134,7 +134,7 @@ class CarsonsEquations():
         yield kᵢⱼ ** 2 / 16 * (0.6728 + log(2 / kᵢⱼ)) * cos(2 * θᵢⱼ)
         yield kᵢⱼ ** 2 / 16 * θᵢⱼ * sin(2 * θᵢⱼ)
         yield kᵢⱼ ** 3 / (45 * sqrt(2)) * cos(3 * θᵢⱼ)
-        yield -π * kᵢⱼ ** 4 / 64 * cos(2 * θᵢⱼ)
+        yield -π * kᵢⱼ ** 4 * cos(4 * θᵢⱼ) / 1536
 
     def compute_Q(self, i, j, number_of_terms=2):
         terms = islice(self.compute_Q_terms(i, j), number_of_terms)
