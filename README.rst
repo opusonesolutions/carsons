@@ -64,7 +64,7 @@ of the conductor for that phase.
 .. code:: python
 
 
-    from carsons import CarsonsEquations, perform_kron_reduction, impedance
+    from carsons import CarsonsEquations, calculate_impedance
 
     class Line:
        gmr: {
@@ -83,10 +83,7 @@ of the conductor for that phase.
          # map of phases 'A', 'B', 'C' and 'N<>' which are described in the
          # gmr, r and phase_positions attributes
 
-
-    z_primitive = CarsonsEquations(Line()).build_z_primitive()
-    z_abc = perform_kron_reduction(z_primitive)
-    line_impedance = impedance(CarsonsEquations(Line()))
+    line_impedance = calculate_impedance(CarsonsEquations(Line()))
 
 
 The model supports any combination of ABC phasings (for example BC, BCN etc...)
@@ -97,24 +94,31 @@ phase.
 Multiple neutrals are supported, as long as they have unique labels starting
 with ``N`` (e.g. ``Neutral1``, ``Neutral2``).
 
+Intermediate results such as primitive impedance matrix are also available.
+
+.. code:: python
+
+    z_primitive = CarsonsEquations(Line()).build_z_primitive()
+
+
 For examples of how to use the model, see the `tests <https://github.com/opusonesolutions/carsons/blob/master/tests/test_carsons.py>`_.
 
 ``carsons`` is tested against several cable configurations from the
 `IEEE 4-bus test network <http://sites.ieee.org/pes-testfeeders/resources/>`_.
 
 
-### Concentric Neutral Cable
+Concentric Neutral Cable
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 ``carsons`` also supports modelling of concentric neutral cables of any phasings.
-Its usage is very similar to the example above, only requires a few more
+Its usage is very similar to the example above, only requiring a few more
 parameters about the neutral conductors in the line model object.
 
 .. code:: python
 
 
     from carsons import (ConcentricNeutralCarsonsEquations,
-                         perform_kron_reduction,
-                         impedance)
+                         calculate_impedance)
 
     class Line:
        resistance: {
@@ -126,7 +130,7 @@ parameters about the neutral conductors in the line model object.
            ...
        }
        phase_positions: {
-            'A' => (x, y) cross-sectional position of the conductor in meters
+            'A': (x, y) cross-sectional position of the conductor in meters
             ...
        }
        phases: {'A', 'NA', ... }
@@ -151,10 +155,7 @@ parameters about the neutral conductors in the line model object.
            ...
        }
 
-
-    z_primitive = ConcentricNeutralCarsonsEquations(Line()).build_z_primitive()
-    z_abc = perform_kron_reduction(z_primitive)
-    line_impedance = impedance(ConcentricNeutralCarsonsEquations(Line()))
+    line_impedance = calculate_impedance(ConcentricNeutralCarsonsEquations(Line()))
 
 For examples of how to use the model, see the `tests <https://github.com/opusonesolutions/carsons/blob/master/tests/test_concentric_neutral_cable.py>`_.
 

@@ -14,7 +14,7 @@ def convert_geometric_model(geometric_model):
     return z_abc
 
 
-def impedance(model):
+def calculate_impedance(model):
     z_primitive = model.build_z_primitive()
     z_abc = perform_kron_reduction(z_primitive)
     return z_abc
