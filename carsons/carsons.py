@@ -14,6 +14,12 @@ def convert_geometric_model(geometric_model):
     return z_abc
 
 
+def impedance(model):
+    z_primitive = model.build_z_primitive()
+    z_abc = perform_kron_reduction(z_primitive)
+    return z_abc
+
+
 def perform_kron_reduction(z_primitive):
     """ Reduces the primitive impedance matrix to an equivalent impedance
         matrix.
@@ -181,12 +187,6 @@ class CarsonsEquations():
     def get_h(self, i):
         _, yᵢ = self.phase_positions[i]
         return yᵢ
-
-    @property
-    def impedance(self):
-        z_primitive = self.build_z_primitive()
-        z_abc = perform_kron_reduction(z_primitive)
-        return z_abc
 
 
 class ConcentricNeutralCarsonsEquations(CarsonsEquations):
