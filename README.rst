@@ -64,7 +64,7 @@ of the conductor for that phase.
 .. code:: python
 
 
-    from carsons import CarsonsEquations, impedance
+    from carsons import CarsonsEquations, calculate_impedance
 
     class Line:
        gmr: {
@@ -83,7 +83,7 @@ of the conductor for that phase.
          # map of phases 'A', 'B', 'C' and 'N<>' which are described in the
          # gmr, r and phase_positions attributes
 
-    line_impedance = impedance(CarsonsEquations(Line()))
+    line_impedance = calculate_impedance(CarsonsEquations(Line()))
 
 
 The model supports any combination of ABC phasings (for example BC, BCN etc...)
@@ -118,7 +118,7 @@ parameters about the neutral conductors in the line model object.
 
 
     from carsons import (ConcentricNeutralCarsonsEquations,
-                         impedance)
+                         calculate_impedance)
 
     class Line:
        resistance: {
@@ -130,7 +130,7 @@ parameters about the neutral conductors in the line model object.
            ...
        }
        phase_positions: {
-            'A' => (x, y) cross-sectional position of the conductor in meters
+            'A': (x, y) cross-sectional position of the conductor in meters
             ...
        }
        phases: {'A', 'NA', ... }
@@ -155,7 +155,7 @@ parameters about the neutral conductors in the line model object.
            ...
        }
 
-    line_impedance = impedance(ConcentricNeutralCarsonsEquations(Line()))
+    line_impedance = calculate_impedance(ConcentricNeutralCarsonsEquations(Line()))
 
 For examples of how to use the model, see the `tests <https://github.com/opusonesolutions/carsons/blob/master/tests/test_concentric_neutral_cable.py>`_.
 
