@@ -64,7 +64,7 @@ of the conductor for that phase.
 .. code:: python
 
 
-   from carsons import CarsonsEquations, perform_kron_reduction
+    from carsons import CarsonsEquations, perform_kron_reduction, impedance
 
     class Line:
        gmr: {
@@ -72,11 +72,11 @@ of the conductor for that phase.
            ...
        }
        r: {
-            'A' => per-length resistance of conductor A in ohms
+            'A': per-length resistance of conductor A in ohms
             ...
        }
        phase_positions: {
-            'A' => (x, y) cross-sectional position of the conductor in meters
+            'A': (x, y) cross-sectional position of the conductor in meters
             ...
        }
        phases: {'A', ... }
@@ -86,6 +86,7 @@ of the conductor for that phase.
 
     z_primitive = CarsonsEquations(Line()).build_z_primitive()
     z_abc = perform_kron_reduction(z_primitive)
+    line_impedance = impedance(CarsonsEquations(Line()))
 
 
 The model supports any combination of ABC phasings (for example BC, BCN etc...)
@@ -100,6 +101,63 @@ For examples of how to use the model, see the `tests <https://github.com/opusone
 
 ``carsons`` is tested against several cable configurations from the
 `IEEE 4-bus test network <http://sites.ieee.org/pes-testfeeders/resources/>`_.
+
+
+### Concentric Neutral Cable
+
+``carsons`` also supports modelling of concentric neutral cables of any phasings.
+Its usage is very similar to the example above, only requires a few more
+parameters about the neutral conductors in the line model object.
+
+.. code:: python
+
+
+    from carsons import (ConcentricNeutralCarsonsEquations,
+                         perform_kron_reduction,
+                         impedance)
+
+    class Line:
+       resistance: {
+           'A': per-length resistance of conductor A in ohms
+           ...
+       }
+       geometric_mean_radius: {
+           'A': geometric_mean_radius_A
+           ...
+       }
+       phase_positions: {
+            'A' => (x, y) cross-sectional position of the conductor in meters
+            ...
+       }
+       phases: {'A', 'NA', ... }
+       neutral_strand_gmr: {
+           'NA': neutral_strand_gmr_A
+           ...
+       }
+       neutral_strand_resistance: {
+           'NA': neutral_strand_resistance_A
+           ...
+       }
+       neutral_strand_diameter: {
+           'NA': neutral_strand_diameter_A
+           ...
+       }
+       diameter_over_neutral: {
+           'NA': diameter_over_neutral_A
+           ...
+       }
+       neutral_strand_count: {
+           'NA': neutral_strand_count_A
+           ...
+       }
+
+
+    z_primitive = ConcentricNeutralCarsonsEquations(Line()).build_z_primitive()
+    z_abc = perform_kron_reduction(z_primitive)
+    line_impedance = impedance(ConcentricNeutralCarsonsEquations(Line()))
+
+For examples of how to use the model, see the `tests <https://github.com/opusonesolutions/carsons/blob/master/tests/test_concentric_neutral_cable.py>`_.
+
 
 Problem Description
 -------------------
