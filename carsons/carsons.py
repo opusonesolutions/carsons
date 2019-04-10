@@ -1,19 +1,21 @@
-from numpy import pi as π
-
-from numpy import zeros
-from numpy.linalg import inv
-from numpy import sqrt
-from numpy import log
-from numpy import cos
-from numpy import sin
-from numpy import arctan
+from collections import defaultdict
 from itertools import islice
+
+from numpy import arctan, cos, log, sin, sqrt, zeros
+from numpy import pi as π
+from numpy.linalg import inv
 
 
 def convert_geometric_model(geometric_model):
     carsons_model = CarsonsEquations(geometric_model)
 
     z_primitive = carsons_model.build_z_primitive()
+    z_abc = perform_kron_reduction(z_primitive)
+    return z_abc
+
+
+def impedance(model):
+    z_primitive = model.build_z_primitive()
     z_abc = perform_kron_reduction(z_primitive)
     return z_abc
 
@@ -107,16 +109,17 @@ class CarsonsEquations():
         Qᵢⱼ = self.compute_Q(i, j)
         ΔX = self.μ * self.ω / π * Qᵢⱼ
 
+        # calculate geometry ratio 𝛥G
         if i != j:
             Dᵢⱼ = self.compute_D(i, j)
             dᵢⱼ = self.compute_d(i, j)
-            geometry_ratio = Dᵢⱼ / dᵢⱼ
+            𝛥G = Dᵢⱼ / dᵢⱼ
         else:
             hᵢ = self.get_h(i)
             gmrⱼ = self.gmr[j]
-            geometry_ratio = 2.0 * hᵢ / gmrⱼ
+            𝛥G = 2.0 * hᵢ / gmrⱼ
 
-        X_o = self.ω * self.μ / (2 * π) * log(geometry_ratio)
+        X_o = self.ω * self.μ / (2 * π) * log(𝛥G)
 
         return X_o + ΔX
 
@@ -172,6 +175,7 @@ class CarsonsEquations():
 
     def compute_D(self, i, j):
         xⱼ, yⱼ = self.phase_positions[j]
+
         return self.calculate_distance(self.phase_positions[i], (xⱼ, -yⱼ))
 
     @staticmethod
@@ -183,3 +187,74 @@ class CarsonsEquations():
     def get_h(self, i):
         _, yᵢ = self.phase_positions[i]
         return yᵢ
+
+
+class ConcentricNeutralCarsonsEquations(CarsonsEquations):
+    def __init__(self, model, *args, **kwargs):
+        super().__init__(model)
+        self.neutral_strand_gmr = model.neutral_strand_gmr
+        self.neutral_strand_count = defaultdict(
+            lambda: None, model.neutral_strand_count)
+        self.neutral_strand_resistance = model.neutral_strand_resistance
+        self.radius = defaultdict(lambda: None, {
+            phase: (diameter_over_neutral -
+                    model.neutral_strand_diameter[phase]) / 2
+            for phase, diameter_over_neutral
+            in model.diameter_over_neutral.items()
+        })
+        self.phase_positions.update({
+            f"N{phase}": self.phase_positions[phase]
+            for phase in self.phase_positions.keys()
+        })
+        self.gmr.update({
+            phase: self.GMR_cn(phase)
+            for phase in model.diameter_over_neutral.keys()
+        })
+        self.r.update({
+            phase: resistance / model.neutral_strand_count[phase]
+            for phase, resistance in model.neutral_strand_resistance.items()
+        })
+        return
+
+    def compute_d(self, i, j):
+        I, J = set(i), set(j)
+        r = self.radius[i] or self.radius[j]
+
+        one_neutral_same_phase = I ^ J == set('N')
+        different_phase = not I & J
+        one_neutral = 'N' in I ^ J
+
+        if one_neutral_same_phase:
+            # Distance between a neutral/phase conductor of same phase
+            return r
+
+        distance_ij = self.calculate_distance(self.phase_positions[i],
+                                              self.phase_positions[j])
+        if different_phase and one_neutral:
+            # Distance between a neutral/phase conductor of different phase
+            # approximate by modelling the concentric neutral cables as one
+            # equivalent conductor directly above the phase conductor
+            return (distance_ij**2 + r**2) ** 0.5
+        else:
+            # Distance between two neutral/phase conductors
+            return distance_ij
+
+    def compute_X(self, i, j):
+        Q_first_term = super().compute_Q(i, j, 1)
+
+        # Simplify equations and don't compute Dᵢⱼ explicitly
+        kᵢⱼ_Dᵢⱼ_ratio = sqrt(self.ω * self.μ / self.ρ)
+        ΔX = Q_first_term * 2 + log(2)
+
+        if i == j:
+            X_o = -log(self.gmr[i]) - log(kᵢⱼ_Dᵢⱼ_ratio)
+        else:
+            X_o = -log(self.compute_d(i, j)) - log(kᵢⱼ_Dᵢⱼ_ratio)
+
+        return (X_o + ΔX) * self.ω * self.μ / (2 * π)
+
+    def GMR_cn(self, phase):
+        GMR_s = self.neutral_strand_gmr[phase]
+        k = self.neutral_strand_count[phase]
+        R = self.radius[phase]
+        return (GMR_s * k * R**(k-1))**(1/k)

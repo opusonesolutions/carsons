@@ -38,6 +38,6 @@ setup(
         'numpy>=1.13.1',
     ],
     extras_require={
-        "test": ["pytest>=3.6", "pytest-cov"],
+        "test": ["pytest>=3.6", "pytest-cov", "pint"],
     },
 )
