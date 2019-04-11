@@ -101,7 +101,7 @@ Intermediate results such as primitive impedance matrix are also available.
     z_primitive = CarsonsEquations(Line()).build_z_primitive()
 
 
-For examples of how to use the model, see the `tests <https://github.com/opusonesolutions/carsons/blob/master/tests/test_carsons.py>`_.
+For examples of how to use the model, see the `overhead wire tests <https://github.com/opusonesolutions/carsons/blob/master/tests/test_carsons.py>`_.
 
 ``carsons`` is tested against several cable configurations from the
 `IEEE 4-bus test network <http://sites.ieee.org/pes-testfeeders/resources/>`_.
@@ -157,7 +157,7 @@ parameters about the neutral conductors in the line model object.
 
     line_impedance = calculate_impedance(ConcentricNeutralCarsonsEquations(Line()))
 
-For examples of how to use the model, see the `tests <https://github.com/opusonesolutions/carsons/blob/master/tests/test_concentric_neutral_cable.py>`_.
+For examples of how to use the model, see the `concentric cable tests <https://github.com/opusonesolutions/carsons/blob/master/tests/test_concentric_neutral_cable.py>`_.
 
 
 Problem Description
@@ -221,7 +221,7 @@ interact with the ``B``, ``C``, and ``N`` conductors.
 
 However, each conductor also has a ground return path (or 'image') --- shown as
 ``A*``, ``B*``, ``C*``, and ``N*`` in the figure above --- which is a magnetically induced
-current path in the ground. When `A` produceds a magnetic field, that field
+current path in the ground. When `A` produces a magnetic field, that field
 *also* interacts with ``B*``, ``C*``, ``N*``, *and* ``A*``. Carsons equations model all
 these interactions and reduce them to an equivalent impedance matrix that makes
 it much easier to model this system.
@@ -237,7 +237,8 @@ References
 
 The following works were used to produce this formulation:
 
-* `Leonard L. Grigsby - Electrical Power Generation, Transmission and Distribution <https://books.google.ca/books?id=XMl8OU4wIEQC&lpg=SA21-PA4&dq=kron%20reduction%20carson%27s%20equation&pg=SA21-PA4#v=onepage&q=kron%20reduction%20carson's%20equation&f=true>`__
+* `Leonard L. Grigsby -- Electrical Power Generation, Transmission and Distribution <https://books.google.ca/books?id=XMl8OU4wIEQC&lpg=SA21-PA4&dq=kron%20reduction%20carson%27s%20equation&pg=SA21-PA4#v=onepage&q=kron%20reduction%20carson's%20equation&f=true>`__
 * `William H. Kersting -- Distribution System Modelling and Analysis 2e <https://books.google.ca/books?id=1R2OsUGSw_8C&lpg=PA84&dq=carson%27s%20equations&pg=PA85#v=onepage&q=carson's%20equations&f=false>`__
 * `Timothy Vismore -- The Vismor Milieu <https://vismor.com/documents/power_systems/transmission_lines/S2.SS1.php>`__
 * `Daniel Van Dommelen, Albert Van Ranst, Robert Poncelet -- GIC Influence on Power Systems calculated by Carson's method <https://core.ac.uk/download/pdf/34634673.pdf>`__
+* `W.  H.  Kersting, Distribution System Analysis Subcommittee -- Radial Distribution Test Feeders <http://sites.ieee.org/pes-testfeeders/files/2017/08/testfeeders.pdf>`__
