@@ -6,7 +6,7 @@ version = open(os.path.join(thisdir, 'carsons', 'VERSION')).read().strip()
 
 
 def readme():
-    with open("README.rst", 'r') as f:
+    with open("README.md", 'r') as f:
         return f.read()
 
 
@@ -29,6 +29,7 @@ setup(
         "Topic :: Scientific/Engineering :: Mathematics",
     ],
     long_description=readme(),
+    long_description_content_type='text/markdown',
     author="Opus One Solutions",
     author_email="rnd@opusonesolutions.com",
     url="https://github.com/opusonesolutions/carsons",
