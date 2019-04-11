@@ -12,9 +12,9 @@ def test_dual_neutral_model():
         #    resistance   gmr         (x, y)
         #   ==========================================
         "A":  (0.000115575, 0.00947938, (0.762, 8.5344)),
-        "B":  (0.000115575, 0.00947938, (2.1336, 8.5344)),
-        "N1":  (0.000115575, 0.00947938, (0.0, 8.5344)),
-        "N2": (0.000367852, 0.00248107, (0.0, 7.3152)),
+        "B":  (0.000115575, 0.00947938, (0.0, 8.5344)),
+        "N1":  (0.000115575, 0.00947938, (2.1336, 8.5344)),
+        "N2": (0.000367852, 0.00248107, (1.2192, 7.3152)),
     }))
     z_primitive = model.build_z_primitive()
 
@@ -32,7 +32,7 @@ def test_dual_neutral_model():
     z_equivalent = numpy.delete(z_equivalent, 2, 0)
     z_equivalent = numpy.delete(z_equivalent, 2, 1)
     z_expected = ACBN_line_z_primitive()
-    assert_array_almost_equal(z_equivalent, z_expected, decimal=4)
+    assert_array_almost_equal(z_equivalent, z_expected)
 
 
 def test_malformed_neutrals_are_ignored():
@@ -40,10 +40,10 @@ def test_malformed_neutrals_are_ignored():
         #    resistance   gmr         (x, y)
         #   ==========================================
         "A":  (0.000115575, 0.00947938, (0.762, 8.5344)),
-        "B":  (0.000115575, 0.00947938, (2.1336, 8.5344)),
-        "C":  (0.000115575, 0.00947938, (0.0, 8.5344)),
-        "N1": (0.000367852, 0.00248107, (0.0, 7.3152)),
-        "pN2": (0.000367852, 0.00248107, (1.2192, 7.3152)),
+        "C":  (0.000115575, 0.00947938, (2.1336, 8.5344)),
+        "B":  (0.000115575, 0.00947938, (0.0, 8.5344)),
+        "N1": (0.000367852, 0.00248107, (1.2192, 7.3152)),
+        "pN2": (0.000367852, 0.00248107, (0.0, 7.3152)),
     })
     model = CarsonsEquations(LINE_WITH_BAD_NEUTRAL_LABEL)
     z_primitive = model.build_z_primitive()
@@ -51,4 +51,4 @@ def test_malformed_neutrals_are_ignored():
     assert z_primitive.shape == (4, 4)
 
     z_expected = ACBN_line_z_primitive()
-    assert_array_almost_equal(z_primitive, z_expected, decimal=4)
+    assert_array_almost_equal(z_primitive, z_expected)
