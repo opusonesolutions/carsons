@@ -53,15 +53,15 @@ properties of the conductor for that phase.
 from carsons import CarsonsEquations, calculate_impedance
 
 class Line:
-   gmr: {
+   geometric_mean_radius: {
        'A': geometric_mean_radius_A
        ...
    }
-   r: {
+   resistance: {
         'A': per-length resistance of conductor A in ohms
         ...
    }
-   phase_positions: {
+   wire_positions: {
         'A': (x, y) cross-sectional position of the conductor in meters
         ...
    }
@@ -91,7 +91,8 @@ For examples of how to use the model, see the [overhead wire
 tests](https://github.com/opusonesolutions/carsons/blob/master/tests/test_carsons.py).
 
 `carsons` is tested against several cable configurations from the [IEEE
-4-bus test network](http://sites.ieee.org/pes-testfeeders/resources/).
+test feeders](http://sites.ieee.org/pes-testfeeders/resources/), as well as
+examples from  EPRI's [OpenDSS documentation](http://svn.code.sf.net/p/electricdss/code/trunk/Distrib/Doc/TechNote%20CableModelling.pdf).
 
 ### Concentric Neutral Cable
 
@@ -113,7 +114,7 @@ class Line:
        'A': geometric_mean_radius_A
        ...
    }
-   phase_positions: {
+   wire_positions: {
         'A': (x, y) cross-sectional position of the conductor in meters
         ...
    }
@@ -232,3 +233,4 @@ The following works were used to produce this formulation:
 -   [Daniel Van Dommelen, Albert Van Ranst, Robert Poncelet -- GIC
     Influence on Power Systems calculated by Carson's
     method](https://core.ac.uk/download/pdf/34634673.pdf)
+-   [Andrea Ballanti, Roger Dugan -- Cable Modelling in OpenDSS](http://svn.code.sf.net/p/electricdss/code/trunk/Distrib/Doc/TechNote%20CableModelling.pdf)
