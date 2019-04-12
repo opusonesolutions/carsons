@@ -145,8 +145,8 @@ class ABCN_balanced_line():
     def wire_positions(self):
         return {
             'A': (0.762, 8.5344),
-            'B': (2.1336, 8.5344),
-            'C': (0, 8.5344),
+            'C': (2.1336, 8.5344),
+            'B': (0, 8.5344),
             'N': (1.2192, 7.3152),
         }
 
@@ -291,7 +291,7 @@ def test_unbalanced_carsons_equations(line, z_primitive_expected):
     assert_array_almost_equal(
         z_primitive_expected,
         z_primitive_computed,
-        decimal=4)
+    )
 
 
 @pytest.mark.parametrize(
@@ -303,7 +303,6 @@ def test_balanced_carsons_equations(line, z_primitive_expected):
     assert_array_almost_equal(
         z_primitive_expected,
         z_primitive_computed,
-        decimal=4
     )
 
 
