@@ -6,7 +6,7 @@ version = open(os.path.join(thisdir, 'carsons', 'VERSION')).read().strip()
 
 
 def readme():
-    with open("README.md", 'r') as f:
+    with open("README.md", 'r', encoding='UTF-8') as f:
         return f.read()
 
 
