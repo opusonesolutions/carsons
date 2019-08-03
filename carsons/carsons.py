@@ -62,16 +62,17 @@ def perform_kron_reduction(z_primitive):
 
 class CarsonsEquations():
 
-    ƒ = 60  # frequency, Hz
     ρ = 100  # resistivity, ohms/meter^3
     μ = 4 * π * 1e-7  # permeability, Henry / meter
-    ω = 2.0 * π * ƒ  # angular frequency radians / second
 
     def __init__(self, model):
         self.phases = model.phases
         self.phase_positions = model.wire_positions
         self.gmr = model.geometric_mean_radius
         self.r = model.resistance
+
+        self.ƒ = getattr(model, 'frequency', 60)
+        self.ω = 2.0 * π * self.ƒ  # angular frequency radians / second
 
     def build_z_primitive(self):
         abc_conductors = [
