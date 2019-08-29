@@ -5,7 +5,7 @@ from carsons.carsons import CarsonsEquations
 from tests.helpers import LineModel
 
 
-def test_dual_neutral_model():
+def test_impedances_with_50hz_frequency():
     line_model = LineModel({
         #     resistance   gmr         (x, y)
         #   ==========================================
@@ -20,9 +20,16 @@ def test_dual_neutral_model():
     line_model.frequency = 50
     z_primitive_50hz = CarsonsEquations(line_model).build_z_primitive()
 
+    # this test rests on the assumption that the real parts of the off-diagonal
+    # elements in z_primitive are proportional to frequency:
+    #  where i ≠ j, R == μω / π Pᵢⱼ
+    #
+    # This holds for P approximated to just one term; additional terms
+    # incorporate kᵢⱼ, and kᵢⱼ ∝ √ω
+
     antidiagonal_mask = 1 - numpy.identity(4)
 
     assert_array_almost_equal(
-        z_primitive_50hz * antidiagonal_mask,
-        z_primitive_60hz * antidiagonal_mask * 50/60
+        z_primitive_50hz.real * antidiagonal_mask,
+        z_primitive_60hz.real * antidiagonal_mask * 50/60
     )
