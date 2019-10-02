@@ -160,6 +160,26 @@ class CN_geometry_line():
         ]
 
 
+CN_geometry_line_dict = {
+    'resistance': {
+        'C': 0.000695936,
+        'N': 0.000695936,
+    },
+    'geometric_mean_radius': {
+        'C': 0.00135941,
+        'N': 0.00135941,
+    },
+    'wire_positions': {
+        'C': (0, 8.8392),
+        'N': (0.1524, 7.3152),
+    },
+    'phases': [
+        'C',
+        'N'
+    ]
+}
+
+
 def CN_line_phase_impedance_60Hz():
     """ IEEE 13 Configuration 605 Impedance Solution At 60Hz """
     return OHM_PER_MILE_TO_OHM_PER_METER * array([
@@ -181,6 +201,7 @@ def CN_line_phase_impedance_50Hz():
     [(ACBN_geometry_line, 60, ACBN_line_phase_impedance_60Hz()),
      (CBN_geometry_line, 60, CBN_line_phase_impedance_60Hz()),
      (CN_geometry_line, 60, CN_line_phase_impedance_60Hz()),
+     
      (ACBN_geometry_line, 50, ACBN_line_phase_impedance_50Hz()),
      (CBN_geometry_line, 50, CBN_line_phase_impedance_50Hz()),
      (CN_geometry_line, 50, CN_line_phase_impedance_50Hz())])
@@ -189,3 +210,18 @@ def test_converts_geometry_to_phase_impedance(
     actual_impedance = convert_geometric_model(line(ƒ=frequency))
     assert_array_almost_equal(expected_impedance,
                               actual_impedance)
+
+
+@pytest.mark.parametrize(
+    "line,frequency,expected_impedance",
+    [
+        (CN_geometry_line_dict, 60, CN_line_phase_impedance_60Hz()),
+        (CN_geometry_line_dict, 50, CN_line_phase_impedance_50Hz()),
+    ]
+)
+def test_convers_geometry_dict_to_phase_impedance(
+    line, frequency, expected_impedance
+):
+    line['ƒ'] = frequency
+    actual_impedance = convert_geometric_model(line)
+    assert_array_almost_equal(expected_impedance, actual_impedance)

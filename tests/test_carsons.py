@@ -8,6 +8,7 @@ from carsons.carsons import (
 from tests.test_overhead_line import (
     ACBN_geometry_line,
     CN_geometry_line,
+    CN_geometry_line_dict,
 )
 
 
@@ -139,7 +140,8 @@ def expected_z_abc_three_neutrals():
 @pytest.mark.parametrize(
     "line,z_primitive_expected",
     [(ACBN_geometry_line(), ACBN_line_z_primitive()),
-     (CN_geometry_line(), CN_line_z_primitive())])
+     (CN_geometry_line(), CN_line_z_primitive()),
+     (CN_geometry_line_dict, CN_line_z_primitive())])
 def test_unbalanced_carsons_equations(line, z_primitive_expected):
     model = CarsonsEquations(line)
     z_primitive_computed = model.build_z_primitive()

@@ -68,16 +68,33 @@ class CarsonsEquations():
     μ = 4 * π * 1e-7  # permeability, Henry / meter
 
     def __init__(self, model):
-        self.phases: Iterable[str] = model.phases
+        if isinstance(model, dict):
+            phases = model['phases']
+            phase_positions = model['wire_positions']
+            gmr = model['geometric_mean_radius']
+            r = model['resistance']
+            ƒ = model.get('ƒ', 60)
+        else:
+            phases = model.phases
+            phase_positions = model.wire_positions
+            gmr = model.geometric_mean_radius
+            r = model.resistance
+            ƒ = getattr(model, 'frequency', 60)
+        
+        self.phases: Iterable[str] = phases
         self.phase_positions: Dict[str, Tuple[float, float]] = \
-            model.wire_positions
-        self.gmr: Dict[str, float] = model.geometric_mean_radius
-        self.r: Dict[str, float] = model.resistance
+            phase_positions
+        self.gmr: Dict[str, float] = gmr
+        self.r: Dict[str, float] = r
 
-        self.ƒ = getattr(model, 'frequency', 60)
+        self.ƒ = ƒ
         self.ω = 2.0 * π * self.ƒ  # angular frequency radians / second
 
-    def build_z_primitive(self) -> ndarray:
+    def build_z_primitive(self):
+        abc_conductors = [
+            ph if ph in self.phases
+            else None for ph in ("A", "B", "C")
+        ]
         neutral_conductors = sorted([
             ph for ph in self.phases
             if ph.startswith("N")
@@ -194,32 +211,41 @@ class CarsonsEquations():
 class ConcentricNeutralCarsonsEquations(CarsonsEquations):
     def __init__(self, model, *args, **kwargs):
         super().__init__(model)
-        self.neutral_strand_gmr: Dict[str, float] = model.neutral_strand_gmr
+
+        if isinstance(model, dict):
+            neutral_strand_gmr = model['neutral_strand_gmr']
+            neutral_strand_count = model['neutral_strand_count']
+            neutral_strand_resistance = model['neutral_strand_resistance']
+            neutral_strand_diameter = model['neutral_strand_diameter']
+            diameter_over_neutral = model['diameter_over_neutral']
+        else:
+            neutral_strand_gmr = model.neutral_strand_gmr
+            neutral_strand_count = model.neutral_strand_count
+            neutral_strand_resistance = model.neutral_strand_resistance
+            neutral_strand_diameter = model.neutral_strand_diameter
+            diameter_over_neutral = model.diameter_over_neutral
+
+        self.neutral_strand_gmr: Dict[str, float] = neutral_strand_gmr
         self.neutral_strand_count: Dict[str, float] = defaultdict(
-            lambda: None,
-            model.neutral_strand_count
+            lambda: None, neutral_strand_count
         )
-        self.neutral_strand_resistance: Dict[str, float] = \
-            model.neutral_strand_resistance
-        self.radius: Dict[str, float] = defaultdict(
-            lambda: None, {
-                phase: (diameter_over_neutral -
-                        model.neutral_strand_diameter[phase]) / 2
-                for phase, diameter_over_neutral
-                in model.diameter_over_neutral.items()
-            }
-        )
+        self.neutral_strand_resistance: Dict[str, float] = neutral_strand_resistance
+        self.radius: Dict[str, float] = defaultdict(lambda: None, {
+            phase: (diameter_over_neutral - neutral_strand_diameter[phase]) / 2
+            for phase, diameter_over_neutral
+            in diameter_over_neutral.items()
+        })
         self.phase_positions.update({
             f"N{phase}": self.phase_positions[phase]
             for phase in self.phase_positions.keys()
         })
         self.gmr.update({
             phase: self.GMR_cn(phase)
-            for phase in model.diameter_over_neutral.keys()
+            for phase in diameter_over_neutral.keys()
         })
         self.r.update({
-            phase: resistance / model.neutral_strand_count[phase]
-            for phase, resistance in model.neutral_strand_resistance.items()
+            phase: resistance / neutral_strand_count[phase]
+            for phase, resistance in neutral_strand_resistance.items()
         })
         return
 

@@ -46,8 +46,8 @@ Installation
 Usage
 -----
 
-Carsons model requires a line model object that maps each phase to
-properties of the conductor for that phase.
+Carsons model requires either a line model object or dictionary that maps
+each phase to properties of the conductor for that phase.
 
 ```python
 from carsons import CarsonsEquations, calculate_impedance
