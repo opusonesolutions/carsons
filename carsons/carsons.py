@@ -67,11 +67,13 @@ class CarsonsEquations():
     μ = 4 * π * 1e-7  # permeability, Henry / meter
     ω = 2.0 * π * ƒ  # angular frequency radians / second
 
-    def __init__(self, model):
+    def __init__(self, model, p_terms=1, q_terms=2):
         self.phases = model.phases
         self.phase_positions = model.wire_positions
         self.gmr = model.geometric_mean_radius
         self.r = model.resistance
+        self._p_terms = p_terms
+        self._q_terms = q_terms
 
     def build_z_primitive(self):
         abc_conductors = [
@@ -98,7 +100,7 @@ class CarsonsEquations():
 
     def compute_R(self, i, j):
         rᵢ = self.r[i]
-        ΔR = self.μ * self.ω / π * self.compute_P(i, j)
+        ΔR = self.μ * self.ω / π * self.compute_P(i, j, self._p_terms)
 
         if i == j:
             return rᵢ + ΔR
@@ -106,7 +108,7 @@ class CarsonsEquations():
             return ΔR
 
     def compute_X(self, i, j):
-        Qᵢⱼ = self.compute_Q(i, j)
+        Qᵢⱼ = self.compute_Q(i, j, self._q_terms)
         ΔX = self.μ * self.ω / π * Qᵢⱼ
 
         # calculate geometry ratio 𝛥G
