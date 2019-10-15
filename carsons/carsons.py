@@ -80,7 +80,7 @@ class CarsonsEquations():
             gmr = model.geometric_mean_radius
             r = model.resistance
             ƒ = getattr(model, 'frequency', 60)
-        
+
         self.phases: Iterable[str] = phases
         self.phase_positions: Dict[str, Tuple[float, float]] = \
             phase_positions
@@ -91,10 +91,6 @@ class CarsonsEquations():
         self.ω = 2.0 * π * self.ƒ  # angular frequency radians / second
 
     def build_z_primitive(self):
-        abc_conductors = [
-            ph if ph in self.phases
-            else None for ph in ("A", "B", "C")
-        ]
         neutral_conductors = sorted([
             ph for ph in self.phases
             if ph.startswith("N")
@@ -229,7 +225,8 @@ class ConcentricNeutralCarsonsEquations(CarsonsEquations):
         self.neutral_strand_count: Dict[str, float] = defaultdict(
             lambda: None, neutral_strand_count
         )
-        self.neutral_strand_resistance: Dict[str, float] = neutral_strand_resistance
+        self.neutral_strand_resistance: Dict[str, float] = \
+            neutral_strand_resistance
         self.radius: Dict[str, float] = defaultdict(lambda: None, {
             phase: (diameter_over_neutral - neutral_strand_diameter[phase]) / 2
             for phase, diameter_over_neutral

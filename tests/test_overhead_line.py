@@ -201,7 +201,6 @@ def CN_line_phase_impedance_50Hz():
     [(ACBN_geometry_line, 60, ACBN_line_phase_impedance_60Hz()),
      (CBN_geometry_line, 60, CBN_line_phase_impedance_60Hz()),
      (CN_geometry_line, 60, CN_line_phase_impedance_60Hz()),
-     
      (ACBN_geometry_line, 50, ACBN_line_phase_impedance_50Hz()),
      (CBN_geometry_line, 50, CBN_line_phase_impedance_50Hz()),
      (CN_geometry_line, 50, CN_line_phase_impedance_50Hz())])
