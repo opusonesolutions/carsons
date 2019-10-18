@@ -172,7 +172,7 @@ class ABCN_balanced_line():
 
 
 def ACBN_line_phase_impedance():
-    """ IEEE 13 Configuration 601 Impedance Solution """
+    """ IEEE 13 Configuration 601 Impedance Solution At 60Hz """
     return OHM_PER_MILE_TO_OHM_PER_METER * array([
             [0.3465 + 1.0179j, 0.1560 + 0.5017j, 0.1580 + 0.4236j],
             [0.1560 + 0.5017j, 0.3375 + 1.0478j, 0.1535 + 0.3849j],
@@ -180,7 +180,7 @@ def ACBN_line_phase_impedance():
 
 
 def ACBN_line_phase_impedance_50Hz():
-    """ IEEE 13 Configuration 601 Impedance Solution in ohms per km """
+    """ IEEE 13 Configuration 601 Impedance Solution At 50Hz """
     return OHM_PER_KILOMETER_TO_OHM_PER_METER * array([
             [0.2101 + 0.5372j,  0.09171 + 0.2691j, 0.09295 + 0.2289j],
             [0.09171 + 0.2691j, 0.20460 + 0.552j,  0.09021 + 0.2085j],
@@ -229,7 +229,7 @@ def ABCN_balanced_z_primitive():
 
 
 def CBN_line_phase_impedance():
-    """ IEEE 13 Configuration 603 Impedance At 60Hz """
+    """ IEEE 13 Configuration 603 Impedance Solution At 60Hz """
     return OHM_PER_MILE_TO_OHM_PER_METER * array([
             [0.0000 + 0.0000j, 0.0000 + 0.0000j, 0.0000 + 0.0000j],
             [0.0000 + 0.0000j, 1.3294 + 1.3471j, 0.2066 + 0.4591j],
@@ -237,7 +237,7 @@ def CBN_line_phase_impedance():
 
 
 def CBN_line_phase_impedance_50Hz():
-    """ IEEE 13 Configuration 603 Impedance At 50Hz """
+    """ IEEE 13 Configuration 603 Impedance Solution At 50Hz """
     return OHM_PER_KILOMETER_TO_OHM_PER_METER * array([
             [0.0000 + 0.0000j, 0.0000 + 0.0000j, 0.0000 + 0.0000j],
             [0.0000 + 0.0000j, 0.8128 + 0.7144j, 0.1153 + 0.2543j],
@@ -245,7 +245,7 @@ def CBN_line_phase_impedance_50Hz():
 
 
 def CN_line_phase_impedance():
-    """ IEEE 13 Configuration 605 Impedance At 60Hz """
+    """ IEEE 13 Configuration 605 Impedance Solution At 60Hz """
     return OHM_PER_MILE_TO_OHM_PER_METER * array([
             [0.0000 + 0.0000j, 0.0000 + 0.0000j, 0.0000 + 0.0000j],
             [0.0000 + 0.0000j, 0.0000 + 0.0000j, 0.0000 + 0.0000j],
