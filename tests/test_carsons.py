@@ -18,8 +18,8 @@ OHM_PER_KILOMETER_TO_OHM_PER_METER = 1 / 1_000
 class ACBN_geometry_line():
     """ IEEE 13 Configuration 601 Line Geometry """
 
-    def __init__(self, **kwargs):
-        self.frequency = kwargs.get('ƒ', 60)
+    def __init__(self, ƒ=60):
+        self.frequency = ƒ
 
     @property
     def resistance(self):
@@ -61,8 +61,8 @@ class ACBN_geometry_line():
 class CBN_geometry_line():
     """ IEEE 13 Configuration 603 Line Geometry """
 
-    def __init__(self, **kwargs):
-        self.frequency = kwargs.get('ƒ', 60)
+    def __init__(self, ƒ=60):
+        self.frequency = ƒ
 
     @property
     def resistance(self):
@@ -100,8 +100,8 @@ class CBN_geometry_line():
 class CN_geometry_line():
     """ IEEE 13 Configuration 605 Line Geometry"""
 
-    def __init__(self, **kwargs):
-        self.frequency = kwargs.get('ƒ', 60)
+    def __init__(self, ƒ=60):
+        self.frequency = ƒ
 
     @property
     def resistance(self):
