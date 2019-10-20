@@ -78,25 +78,22 @@ class CarsonsEquations():
         self.ω = 2.0 * π * self.ƒ  # angular frequency radians / second
 
     def build_z_primitive(self) -> ndarray:
-        abc_conductors = [
-            ph if ph in self.phases
-            else None for ph in ("A", "B", "C")
-        ]
         neutral_conductors = sorted([
             ph for ph in self.phases
             if ph.startswith("N")
         ])
-        conductors = abc_conductors + neutral_conductors
+        conductors = ["A", "B", "C"] + neutral_conductors
 
         dimension = len(conductors)
         z_primitive = zeros(shape=(dimension, dimension), dtype=complex)
 
         for index_i, phase_i in enumerate(conductors):
             for index_j, phase_j in enumerate(conductors):
-                if phase_i is not None and phase_j is not None:
-                    R = self.compute_R(phase_i, phase_j)
-                    X = self.compute_X(phase_i, phase_j)
-                    z_primitive[index_i, index_j] = complex(R, X)
+                if phase_i not in self.phases or phase_j not in self.phases:
+                    continue
+                R = self.compute_R(phase_i, phase_j)
+                X = self.compute_X(phase_i, phase_j)
+                z_primitive[index_i, index_j] = complex(R, X)
 
         return z_primitive
 
