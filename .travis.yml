@@ -26,5 +26,5 @@ install:
   - pip install flake8 coveralls
 script:
   - flake8
-  - pytest --cov-report term-missing --cov=carsons tests/
+  - pytest --mypy --cov-report term-missing --cov=carsons tests/
 after_success: coveralls

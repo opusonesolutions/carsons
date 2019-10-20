@@ -15,7 +15,8 @@ setup(
     version=version,
     packages=["carsons"],
     package_data={
-        '': ['VERSION']
+        '': ['VERSION'],
+        'carsons': ['py.typed'],
     },
     description="A python library computing carson's equations.",
     classifiers=[
@@ -38,7 +39,13 @@ setup(
     install_requires=[
         'numpy>=1.13.1',
     ],
+    zip_safe=False,
     extras_require={
-        "test": ["pytest>=3.6", "pytest-cov", "pint"],
+        "test": [
+            "pytest>=3.6",
+            "pytest-cov",
+            "pytest-mypy",
+            "pint",
+        ],
     },
 )
