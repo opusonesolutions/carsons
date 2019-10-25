@@ -88,7 +88,7 @@ z_primitive = CarsonsEquations(Line()).build_z_primitive()
 ```
 
 For examples of how to use the model, see the [overhead wire
-tests](https://github.com/opusonesolutions/carsons/blob/master/tests/test_carsons.py).
+tests](https://github.com/opusonesolutions/carsons/blob/master/tests/test_overhead_line.py).
 
 `carsons` is tested against several cable configurations from the [IEEE
 test feeders](http://sites.ieee.org/pes-testfeeders/resources/), as well as

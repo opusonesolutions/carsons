@@ -4,7 +4,7 @@ from numpy.testing import assert_array_almost_equal
 
 from carsons import ConcentricNeutralCarsonsEquations, calculate_impedance
 from tests.helpers import ConcentricLineModel
-from tests.test_carsons import OHM_PER_MILE_TO_OHM_PER_METER
+from tests.test_overhead_line import OHM_PER_MILE_TO_OHM_PER_METER
 
 ureg = pint.UnitRegistry()
 
