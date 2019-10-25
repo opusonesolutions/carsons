@@ -1,12 +1,14 @@
 from collections import defaultdict
 from itertools import islice
+from typing import Dict, Iterable, Iterator, Tuple
 
 from numpy import arctan, cos, log, sin, sqrt, zeros
+from numpy import ndarray
 from numpy import pi as π
 from numpy.linalg import inv
 
 
-def convert_geometric_model(geometric_model):
+def convert_geometric_model(geometric_model) -> ndarray:
     carsons_model = CarsonsEquations(geometric_model)
 
     z_primitive = carsons_model.build_z_primitive()
@@ -14,13 +16,13 @@ def convert_geometric_model(geometric_model):
     return z_abc
 
 
-def calculate_impedance(model):
+def calculate_impedance(model) -> ndarray:
     z_primitive = model.build_z_primitive()
     z_abc = perform_kron_reduction(z_primitive)
     return z_abc
 
 
-def perform_kron_reduction(z_primitive):
+def perform_kron_reduction(z_primitive: ndarray) -> ndarray:
     """ Reduces the primitive impedance matrix to an equivalent impedance
         matrix.
 
@@ -66,38 +68,36 @@ class CarsonsEquations():
     μ = 4 * π * 1e-7  # permeability, Henry / meter
 
     def __init__(self, model):
-        self.phases = model.phases
-        self.phase_positions = model.wire_positions
-        self.gmr = model.geometric_mean_radius
-        self.r = model.resistance
+        self.phases: Iterable[str] = model.phases
+        self.phase_positions: Dict[str, Tuple[float, float]] = \
+            model.wire_positions
+        self.gmr: Dict[str, float] = model.geometric_mean_radius
+        self.r: Dict[str, float] = model.resistance
 
         self.ƒ = getattr(model, 'frequency', 60)
         self.ω = 2.0 * π * self.ƒ  # angular frequency radians / second
 
-    def build_z_primitive(self):
-        abc_conductors = [
-            ph if ph in self.phases
-            else None for ph in ("A", "B", "C")
-        ]
+    def build_z_primitive(self) -> ndarray:
         neutral_conductors = sorted([
             ph for ph in self.phases
             if ph.startswith("N")
         ])
-        conductors = abc_conductors + neutral_conductors
+        conductors = ["A", "B", "C"] + neutral_conductors
 
         dimension = len(conductors)
         z_primitive = zeros(shape=(dimension, dimension), dtype=complex)
 
         for index_i, phase_i in enumerate(conductors):
             for index_j, phase_j in enumerate(conductors):
-                if phase_i is not None and phase_j is not None:
-                    R = self.compute_R(phase_i, phase_j)
-                    X = self.compute_X(phase_i, phase_j)
-                    z_primitive[index_i, index_j] = complex(R, X)
+                if phase_i not in self.phases or phase_j not in self.phases:
+                    continue
+                R = self.compute_R(phase_i, phase_j)
+                X = self.compute_X(phase_i, phase_j)
+                z_primitive[index_i, index_j] = complex(R, X)
 
         return z_primitive
 
-    def compute_R(self, i, j):
+    def compute_R(self, i, j) -> float:
         rᵢ = self.r[i]
         ΔR = self.μ * self.ω / π * self.compute_P(i, j)
 
@@ -106,7 +106,7 @@ class CarsonsEquations():
         else:
             return ΔR
 
-    def compute_X(self, i, j):
+    def compute_X(self, i, j) -> float:
         Qᵢⱼ = self.compute_Q(i, j)
         ΔX = self.μ * self.ω / π * Qᵢⱼ
 
@@ -124,11 +124,11 @@ class CarsonsEquations():
 
         return X_o + ΔX
 
-    def compute_P(self, i, j, number_of_terms=1):
+    def compute_P(self, i, j, number_of_terms=1) -> float:
         terms = islice(self.compute_P_terms(i, j), number_of_terms)
         return sum(terms)
 
-    def compute_P_terms(self, i, j):
+    def compute_P_terms(self, i, j) -> Iterator[float]:
         yield π / 8.0
 
         kᵢⱼ = self.compute_k(i, j)
@@ -140,11 +140,11 @@ class CarsonsEquations():
         yield kᵢⱼ ** 3 / (45 * sqrt(2)) * cos(3 * θᵢⱼ)
         yield -π * kᵢⱼ ** 4 * cos(4 * θᵢⱼ) / 1536
 
-    def compute_Q(self, i, j, number_of_terms=2):
+    def compute_Q(self, i, j, number_of_terms=2) -> float:
         terms = islice(self.compute_Q_terms(i, j), number_of_terms)
         return sum(terms)
 
-    def compute_Q_terms(self, i, j):
+    def compute_Q_terms(self, i, j) -> Iterator[float]:
         yield -0.0386
 
         kᵢⱼ = self.compute_k(i, j)
@@ -157,11 +157,11 @@ class CarsonsEquations():
         yield -kᵢⱼ ** 4 / 384 * θᵢⱼ * sin(4 * θᵢⱼ)
         yield -kᵢⱼ ** 4 / 384 * cos(4 * θᵢⱼ) * (log(2 / kᵢⱼ) + 1.0895)
 
-    def compute_k(self, i, j):
+    def compute_k(self, i, j) -> float:
         Dᵢⱼ = self.compute_D(i, j)
         return Dᵢⱼ * sqrt(self.ω * self.μ / self.ρ)
 
-    def compute_θ(self, i, j):
+    def compute_θ(self, i, j) -> float:
         xᵢ, _ = self.phase_positions[i]
         xⱼ, _ = self.phase_positions[j]
         xᵢⱼ = abs(xⱼ - xᵢ)
@@ -169,18 +169,19 @@ class CarsonsEquations():
 
         return arctan(xᵢⱼ / (hᵢ + hⱼ))
 
-    def compute_d(self, i, j):
+    def compute_d(self, i, j) -> float:
         return self.calculate_distance(
             self.phase_positions[i],
-            self.phase_positions[j])
+            self.phase_positions[j],
+        )
 
-    def compute_D(self, i, j):
+    def compute_D(self, i, j) -> float:
         xⱼ, yⱼ = self.phase_positions[j]
 
         return self.calculate_distance(self.phase_positions[i], (xⱼ, -yⱼ))
 
     @staticmethod
-    def calculate_distance(positionᵢ, positionⱼ):
+    def calculate_distance(positionᵢ, positionⱼ) -> float:
         xᵢ, yᵢ = positionᵢ
         xⱼ, yⱼ = positionⱼ
         return sqrt((xᵢ - xⱼ)**2 + (yᵢ - yⱼ)**2)
@@ -193,16 +194,21 @@ class CarsonsEquations():
 class ConcentricNeutralCarsonsEquations(CarsonsEquations):
     def __init__(self, model, *args, **kwargs):
         super().__init__(model)
-        self.neutral_strand_gmr = model.neutral_strand_gmr
-        self.neutral_strand_count = defaultdict(
-            lambda: None, model.neutral_strand_count)
-        self.neutral_strand_resistance = model.neutral_strand_resistance
-        self.radius = defaultdict(lambda: None, {
-            phase: (diameter_over_neutral -
-                    model.neutral_strand_diameter[phase]) / 2
-            for phase, diameter_over_neutral
-            in model.diameter_over_neutral.items()
-        })
+        self.neutral_strand_gmr: Dict[str, float] = model.neutral_strand_gmr
+        self.neutral_strand_count: Dict[str, float] = defaultdict(
+            lambda: None,
+            model.neutral_strand_count
+        )
+        self.neutral_strand_resistance: Dict[str, float] = \
+            model.neutral_strand_resistance
+        self.radius: Dict[str, float] = defaultdict(
+            lambda: None, {
+                phase: (diameter_over_neutral -
+                        model.neutral_strand_diameter[phase]) / 2
+                for phase, diameter_over_neutral
+                in model.diameter_over_neutral.items()
+            }
+        )
         self.phase_positions.update({
             f"N{phase}": self.phase_positions[phase]
             for phase in self.phase_positions.keys()
@@ -217,7 +223,7 @@ class ConcentricNeutralCarsonsEquations(CarsonsEquations):
         })
         return
 
-    def compute_d(self, i, j):
+    def compute_d(self, i, j) -> float:
         I, J = set(i), set(j)
         r = self.radius[i] or self.radius[j]
 
@@ -240,7 +246,7 @@ class ConcentricNeutralCarsonsEquations(CarsonsEquations):
             # Distance between two neutral/phase conductors
             return distance_ij
 
-    def compute_X(self, i, j):
+    def compute_X(self, i, j) -> float:
         Q_first_term = super().compute_Q(i, j, 1)
 
         # Simplify equations and don't compute Dᵢⱼ explicitly
@@ -254,7 +260,7 @@ class ConcentricNeutralCarsonsEquations(CarsonsEquations):
 
         return (X_o + ΔX) * self.ω * self.μ / (2 * π)
 
-    def GMR_cn(self, phase):
+    def GMR_cn(self, phase) -> float:
         GMR_s = self.neutral_strand_gmr[phase]
         k = self.neutral_strand_count[phase]
         R = self.radius[phase]

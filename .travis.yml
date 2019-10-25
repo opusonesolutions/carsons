@@ -6,6 +6,8 @@ jobs:
     - python: 3.6
     - python: 3.7
       dist: xenial
+    - python: 3.8
+      dist: xenial
     - stage: deploy
       install: skip
       script: true
@@ -26,5 +28,5 @@ install:
   - pip install flake8 coveralls
 script:
   - flake8
-  - pytest --cov-report term-missing --cov=carsons tests/
+  - pytest --mypy --cov-report term-missing --cov=carsons tests/
 after_success: coveralls
