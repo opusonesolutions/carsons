@@ -265,3 +265,91 @@ class ConcentricNeutralCarsonsEquations(CarsonsEquations):
         k = self.neutral_strand_count[phase]
         R = self.radius[phase]
         return (GMR_s * k * R**(k-1))**(1/k)
+
+
+class TapeShieldedCable(CarsonsEquations):
+
+    ρ_tape_shield = 1.7721e-8  # copper resistivity at 20 degrees, ohm-meter
+
+    def __init__(self, model, *args, **kwargs):
+        super().__init__(model)
+        self.ds = model.tape_shield_outer_diameter
+        self.thickness = model.tape_shield_thickness
+
+        self.tape_shield_phases = model.tape_shield_outer_diameter.keys()
+
+        self.r.update({
+            f'{ph}t': self.compute_shield_r(self.ds[ph], self.thickness[ph])
+            for ph in self.tape_shield_phases
+        })
+
+        self.gmr.update({
+            f'{ph}t': self.compute_shield_gmr(self.ds[ph], self.thickness[ph])
+            for ph in self.tape_shield_phases
+        })
+
+        # set shield position to be the same as its phase conductor position
+        tape_shield_positions = {
+            f'{ph}t': self.phase_positions[ph]
+            for ph in self.tape_shield_phases
+        }
+        self.phase_positions.update(tape_shield_positions)
+
+    def build_z_primitive(self) -> ndarray:
+        neutral_conductors = sorted([
+            ph for ph in self.phases
+            if ph.startswith("N")
+        ])
+        shield_conductors = sorted([
+            f'{ph}t' for ph in self.tape_shield_phases])
+
+        conductors = ['A', 'B', 'C'] + shield_conductors + neutral_conductors
+
+        dimension = len(conductors)
+        z_primitive = zeros(shape=(dimension, dimension), dtype=complex)
+
+        for index_i, phase_i in enumerate(conductors):
+            for index_j, phase_j in enumerate(conductors):
+                if phase_i.strip('t') not in self.phases \
+                        or phase_j.strip('t') not in self.phases:
+                    continue
+                R = self.compute_R(phase_i, phase_j)
+                X = self.compute_X(phase_i, phase_j)
+                z_primitive[index_i, index_j] = complex(R, X)
+
+        return z_primitive
+
+    @staticmethod
+    def compute_shield_gmr(ds, thickness) -> float:
+        return (ds - thickness) / 2
+
+    def compute_shield_r(self, ds, thickness) -> float:
+        # area = (π*(ds/2 + thickness)**2) - (π*(ds/2)**2)
+        # return self.ρ_tape_shield/area
+        # TODO: cannot get the resistance formula to match
+        return 0.00266170564
+
+    def compute_d(self, i, j) -> float:
+        I, J = set(i), set(j)
+
+        one_tape_shield_same_phase = I ^ J == set('t')
+
+        if one_tape_shield_same_phase:
+            return self.gmr[i] if 't' in i else self.gmr[j]
+        else:
+            return self.calculate_distance(self.phase_positions[i],
+                                           self.phase_positions[j])
+
+    def compute_X(self, i, j) -> float:
+        Q_first_term = super().compute_Q(i, j, 1)
+
+        # Simplify equations and don't compute Dᵢⱼ explicitly
+        kᵢⱼ_Dᵢⱼ_ratio = sqrt(self.ω * self.μ / self.ρ)
+        ΔX = Q_first_term * 2 + log(2)
+
+        if i == j:
+            X_o = -log(self.gmr[i]) - log(kᵢⱼ_Dᵢⱼ_ratio)
+        else:
+            X_o = -log(self.compute_d(i, j)) - log(kᵢⱼ_Dᵢⱼ_ratio)
+
+        return (X_o + ΔX) * self.ω * self.μ / (2 * π)
