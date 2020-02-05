@@ -88,3 +88,40 @@ class ConcentricLineModel:
     @property
     def neutral_strand_count(self):
         return self._neutral_strand_count
+
+
+class MultiLineModel:
+    def __init__(self, conductors):
+        self._resistance = {}
+        self._geometric_mean_radius = {}
+        self._wire_positions = {}
+        self._phases = {}
+        self._radius = {}
+
+        for phase, val in conductors.items():
+            self._resistance[phase] = val['resistance']
+            self._geometric_mean_radius[phase] = val['gmr']
+            self._wire_positions[phase] = val['wire_positions']
+            self._radius[phase] = val['radius']
+
+        self._phases = sorted(list(conductors.keys()))
+
+    @property
+    def resistance(self):
+        return self._resistance
+
+    @property
+    def geometric_mean_radius(self):
+        return self._geometric_mean_radius
+
+    @property
+    def wire_positions(self):
+        return self._wire_positions
+
+    @property
+    def phases(self):
+        return self._phases
+
+    @property
+    def radius(self):
+        return self._radius

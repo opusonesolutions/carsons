@@ -265,3 +265,16 @@ class ConcentricNeutralCarsonsEquations(CarsonsEquations):
         k = self.neutral_strand_count[phase]
         R = self.radius[phase]
         return (GMR_s * k * R**(k-1))**(1/k)
+
+
+class MultiConductorCarsonsEquations(CarsonsEquations):
+    def __init__(self, model):
+        super().__init__(model)
+        self.radius: Dict[str, float] = model.radius
+
+    def compute_d(self, i, j) -> float:
+        return self.radius[i] + self.radius[j]
+
+    def compute_D(self, i, j) -> float:
+        x, y = self.phase_positions[i]
+        return 2 * y
