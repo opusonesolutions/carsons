@@ -18,11 +18,14 @@ def convert_geometric_model(geometric_model) -> ndarray:
 
 def calculate_impedance(model) -> ndarray:
     z_primitive = model.build_z_primitive()
-    z_abc = perform_kron_reduction(z_primitive)
+
+    dim = 2 if getattr(model, 'secondary', False) else 3
+    z_abc = perform_kron_reduction(z_primitive, dimension=dim)
+
     return z_abc
 
 
-def perform_kron_reduction(z_primitive: ndarray) -> ndarray:
+def perform_kron_reduction(z_primitive: ndarray, dimension=3) -> ndarray:
     """ Reduces the primitive impedance matrix to an equivalent impedance
         matrix.
 
@@ -56,8 +59,10 @@ def perform_kron_reduction(z_primitive: ndarray) -> ndarray:
                             [Zba, Zbb, Zbc]
                             [Zca, Zcb, Zcc]
     """
-    Ẑpp, Ẑpn = z_primitive[0:3, 0:3], z_primitive[0:3, 3:]
-    Ẑnp, Ẑnn = z_primitive[3:,  0:3], z_primitive[3:,  3:]
+    Ẑpp, Ẑpn = (z_primitive[0:dimension, 0:dimension],
+                z_primitive[0:dimension, dimension:])
+    Ẑnp, Ẑnn = (z_primitive[dimension:,  0:dimension],
+                z_primitive[dimension:,  dimension:])
     Z_abc = Ẑpp - Ẑpn @ inv(Ẑnn) @ Ẑnp
     return Z_abc
 
@@ -271,10 +276,42 @@ class MultiConductorCarsonsEquations(CarsonsEquations):
     def __init__(self, model):
         super().__init__(model)
         self.radius: Dict[str, float] = model.radius
+        self.secondary: bool = model.secondary
+        self.insulation_thickness: Dict[str, float] = model.insulation_thickness
+
+    def build_z_primitive(self) -> ndarray:
+        neutral_conductors = sorted([
+            ph for ph in self.phases
+            if ph.startswith("N")
+        ])
+        if self.secondary:
+            secondary_conductors = ['S1', 'S2']
+            conductors = secondary_conductors + neutral_conductors
+            ph = (set(self.phases) - set(neutral_conductors)).pop()
+            for k, v in self.__dict__.items():
+                if isinstance(v, dict):
+                    prop = v.pop(ph)
+                    v.update({k: prop for k in secondary_conductors})
+            self.phases = conductors
+        else:
+            conductors = ["A", "B", "C"] + neutral_conductors
+
+        dimension = len(conductors)
+        z_primitive = zeros(shape=(dimension, dimension), dtype=complex)
+
+        for index_i, phase_i in enumerate(conductors):
+            for index_j, phase_j in enumerate(conductors):
+                if phase_i not in self.phases or phase_j not in self.phases:
+                    continue
+                R = self.compute_R(phase_i, phase_j)
+                X = self.compute_X(phase_i, phase_j)
+                z_primitive[index_i, index_j] = complex(R, X)
+
+        return z_primitive
 
     def compute_d(self, i, j) -> float:
-        return self.radius[i] + self.radius[j]
+        return (self.radius[i] + self.radius[j]
+                + self.insulation_thickness[i] + self.insulation_thickness[j])
 
     def compute_D(self, i, j) -> float:
-        x, y = self.phase_positions[i]
-        return 2 * y
+        return self.phase_positions[i][1] + self.phase_positions[j][1]
