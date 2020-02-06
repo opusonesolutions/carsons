@@ -277,7 +277,8 @@ class MultiConductorCarsonsEquations(CarsonsEquations):
         super().__init__(model)
         self.radius: Dict[str, float] = model.radius
         self.secondary: bool = model.secondary
-        self.insulation_thickness: Dict[str, float] = model.insulation_thickness
+        self.insulation_thickness: Dict[str, float] = \
+            model.insulation_thickness
 
     def build_z_primitive(self) -> ndarray:
         neutral_conductors = sorted([

@@ -17,7 +17,7 @@ kft = ureg.feet * 1000
 
 def test_triplex_phased_cable():
     """
-    Test against triplex NS75 aluminum conductor cable.
+    Test against 3/0 triplex NS75 aluminum conductor cable.
     """
     phases = 'ABC'
     phase_conductor = {
@@ -31,15 +31,19 @@ def test_triplex_phased_cable():
     carsons_model = MultiConductorCarsonsEquations(multi_line_model)
 
     assert_array_almost_equal(calculate_impedance(carsons_model), array(
-        [[4.389e-4 + 1j * 9.200e-4, 5.922e-5 + 1j * 8.277e-4, 5.922e-5 + 1j * 8.277e-4],
-         [5.922e-5 + 1j * 8.277e-4, 4.389e-4 + 1j * 9.200e-4, 5.922e-5 + 1j * 8.277e-4],
-         [5.922e-5 + 1j * 8.277e-4, 5.922e-5 + 1j * 8.277e-4, 4.389e-4 + 1j * 9.200e-4]]
+        [[4.389e-4 + 1j*9.200e-4, 5.922e-5 + 1j*8.277e-4,
+          5.922e-5 + 1j*8.277e-4],
+         [5.922e-5 + 1j*8.277e-4, 4.389e-4 + 1j*9.200e-4,
+          5.922e-5 + 1j*8.277e-4],
+         [5.922e-5 + 1j*8.277e-4, 5.922e-5 + 1j*8.277e-4,
+          4.389e-4 + 1j*9.200e-4]]
     ), decimal=4)
 
 
 def test_triplex_secondary():
     """
-    Test against 1/0 AA triplex from example 11.3 in Kersting's book.
+    Test against 1/0 AA triplex secondary cable from example 11.3
+    in Kersting's book.
     """
     conductor = {
         'resistance': (0.97 * (ohms / miles)).to('ohm / meters').magnitude,
@@ -47,7 +51,10 @@ def test_triplex_secondary():
         'wire_positions': (0, 1),
         'radius': (0.368 / 2 * inches).to('meters').magnitude,
     }
-    phase_conductor = {**conductor, 'insulation_thickness': (0.08 * inches).to('meters').magnitude}
+    phase_conductor = {
+        **conductor,
+        'insulation_thickness': (0.08 * inches).to('meters').magnitude
+    }
     neutral_conductor = {**conductor, 'insulation_thickness': 0}
     multi_line_model = MultiLineModel(
         {'A': phase_conductor, 'N': neutral_conductor}, is_secondary=True
