@@ -18,9 +18,7 @@ def convert_geometric_model(geometric_model) -> ndarray:
 
 def calculate_impedance(model) -> ndarray:
     z_primitive = model.build_z_primitive()
-
-    dim = 2 if getattr(model, 'secondary', False) else 3
-    z_abc = perform_kron_reduction(z_primitive, dimension=dim)
+    z_abc = perform_kron_reduction(z_primitive, dimension=model.dimension)
 
     return z_abc
 
@@ -194,6 +192,10 @@ class CarsonsEquations():
     def get_h(self, i):
         _, yᵢ = self.phase_positions[i]
         return yᵢ
+
+    @property
+    def dimension(self):
+        return 2 if getattr(self, 'secondary', False) else 3
 
 
 class ConcentricNeutralCarsonsEquations(CarsonsEquations):
