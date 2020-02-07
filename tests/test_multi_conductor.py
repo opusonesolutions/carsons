@@ -1,4 +1,5 @@
 import pint
+import pytest
 from numpy import array
 from numpy.testing import assert_array_almost_equal
 
@@ -13,33 +14,6 @@ inches = ureg.inches
 miles = ureg.miles
 ohms = ureg.ohms
 kft = ureg.feet * 1000
-
-
-def test_duplex_1ph():
-    """
-    Test 1/0 NS75 duplex cable.
-    """
-    phases = 'B'
-    conductor = {
-        'resistance': (0.97 * (ohms / miles)).to('ohm / meters').magnitude,
-        'gmr': (0.0111 * feet).to('meters').magnitude,
-        'wire_positions': (0, 5),
-        'radius': (0.368 / 2 * inches).to('meters').magnitude,
-    }
-    phase_conductor = {**conductor, 'insulation_thickness': 0.00137}
-    neutral_conductor = {**conductor, 'insulation_thickness': 0}
-
-    line_model_dict = {ph: phase_conductor for ph in phases}
-    line_model_dict.update({'N': neutral_conductor})
-
-    multi_line_model = MultiLineModel(line_model_dict)
-    carsons_model = MultiConductorCarsonsEquations(multi_line_model)
-
-    assert_array_almost_equal(calculate_impedance(carsons_model), array(
-        [[0.0 + 1j*0.0, 0.0 + 1j*0.0, 0.0 + 1j*0.0],
-         [0.0 + 1j*0.0, 9.521e-4 + 1j*3.744e-4, 0.0 + 1j*0.0],
-         [0.0 + 1j*0.0, 0.0 + 1j*0.0, 0.0 + 1j*0.0]]
-    ), decimal=4)
 
 
 def test_triplex_phased_cable():
@@ -95,18 +69,40 @@ def test_triplex_secondary():
     ) * OHM_PER_MILE_TO_OHM_PER_METER, decimal=4)
 
 
-def test_quadruplex_3ph():
-    """
-    Test 4/0 NS75 quadruplex cable.
-    """
-    phases = 'ABC'
+EXPECTED_DUPLEX_IMPEDANCE = array(
+        [[0.0 + 1j*0.0, 0.0 + 1j*0.0, 0.0 + 1j*0.0],
+         [0.0 + 1j*0.0, 9.521e-4 + 1j*3.744e-4, 0.0 + 1j*0.0],
+         [0.0 + 1j*0.0, 0.0 + 1j*0.0, 0.0 + 1j*0.0]]
+    )
+
+EXPECTED_QUADRUPLEX_IMPEDANCE = array(
+        [[5.223e-4 + 1j*2.279e-4, 2.216e-4 + 1j*1.373e-4,
+          2.216e-4 + 1j*1.373e-4],
+         [2.216e-4 + 1j*1.373e-4, 5.223e-4 + 1j*2.279e-4,
+          2.216e-4 + 1j*1.373e-4],
+         [2.216e-4 + 1j*1.373e-4, 2.216e-4 + 1j*1.373e-4,
+          5.223e-4 + 1j*2.279e-4]]
+    )
+
+
+@pytest.mark.parametrize(
+    'phases, resistance, gmr, wire_position, radius, insulation_thickness, expected_result',
+    [
+        ('B', 0.97, 0.0111, (0, 5), 0.368/2, 0.00137, EXPECTED_DUPLEX_IMPEDANCE),
+        ('ABC', 0.484, 0.0158, (0, 5), 0.522/2, 0.00137, EXPECTED_QUADRUPLEX_IMPEDANCE)
+    ]
+)
+def test_multi_conductor_cable_with_neutral(
+        phases, resistance, gmr, wire_position, radius,
+        insulation_thickness, expected_result
+):
     conductor = {
-        'resistance': (0.484 * (ohms / miles)).to('ohm / meters').magnitude,
-        'gmr': (0.0158 * feet).to('meters').magnitude,
-        'wire_positions': (0, 5),
-        'radius': (0.522 / 2 * inches).to('meters').magnitude,
+        'resistance': (resistance * (ohms / miles)).to('ohm / meters').magnitude,
+        'gmr': (gmr * feet).to('meters').magnitude,
+        'wire_positions': wire_position,
+        'radius': (radius * inches).to('meters').magnitude,
     }
-    phase_conductor = {**conductor, 'insulation_thickness': 0.00137}
+    phase_conductor = {**conductor, 'insulation_thickness': insulation_thickness}
     neutral_conductor = {**conductor, 'insulation_thickness': 0}
 
     line_model_dict = {ph: phase_conductor for ph in phases}
@@ -115,11 +111,4 @@ def test_quadruplex_3ph():
     multi_line_model = MultiLineModel(line_model_dict)
     carsons_model = MultiConductorCarsonsEquations(multi_line_model)
 
-    assert_array_almost_equal(calculate_impedance(carsons_model), array(
-        [[5.223e-4 + 1j*2.279e-4, 2.216e-4 + 1j*1.373e-4,
-          2.216e-4 + 1j*1.373e-4],
-         [2.216e-4 + 1j*1.373e-4, 5.223e-4 + 1j*2.279e-4,
-          2.216e-4 + 1j*1.373e-4],
-         [2.216e-4 + 1j*1.373e-4, 2.216e-4 + 1j*1.373e-4,
-          5.223e-4 + 1j*2.279e-4]]
-    ), decimal=4)
+    assert_array_almost_equal(calculate_impedance(carsons_model), expected_result, decimal=4)
