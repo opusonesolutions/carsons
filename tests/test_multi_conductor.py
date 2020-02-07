@@ -86,23 +86,25 @@ EXPECTED_QUADRUPLEX_IMPEDANCE = array(
 
 
 @pytest.mark.parametrize(
-    'phases, resistance, gmr, wire_position, radius, insulation_thickness, expected_result',
-    [
-        ('B', 0.97, 0.0111, (0, 5), 0.368/2, 0.00137, EXPECTED_DUPLEX_IMPEDANCE),
-        ('ABC', 0.484, 0.0158, (0, 5), 0.522/2, 0.00137, EXPECTED_QUADRUPLEX_IMPEDANCE)
-    ]
+    'phases, resistance, gmr, wire_position, radius, insulation_thickness, '
+    'expected_result',
+    [('B', 0.97, 0.0111, (0, 5), 0.368/2, 0.00137, EXPECTED_DUPLEX_IMPEDANCE),
+     ('ABC', 0.484, 0.0158, (0, 5), 0.522/2, 0.00137,
+      EXPECTED_QUADRUPLEX_IMPEDANCE)]
 )
 def test_multi_conductor_cable_with_neutral(
         phases, resistance, gmr, wire_position, radius,
         insulation_thickness, expected_result
 ):
     conductor = {
-        'resistance': (resistance * (ohms / miles)).to('ohm / meters').magnitude,
+        'resistance': (resistance * (ohms / miles)
+                       ).to('ohm / meters').magnitude,
         'gmr': (gmr * feet).to('meters').magnitude,
         'wire_positions': wire_position,
         'radius': (radius * inches).to('meters').magnitude,
     }
-    phase_conductor = {**conductor, 'insulation_thickness': insulation_thickness}
+    phase_conductor = {**conductor,
+                       'insulation_thickness': insulation_thickness}
     neutral_conductor = {**conductor, 'insulation_thickness': 0}
 
     line_model_dict = {ph: phase_conductor for ph in phases}
@@ -111,4 +113,5 @@ def test_multi_conductor_cable_with_neutral(
     multi_line_model = MultiLineModel(line_model_dict)
     carsons_model = MultiConductorCarsonsEquations(multi_line_model)
 
-    assert_array_almost_equal(calculate_impedance(carsons_model), expected_result, decimal=4)
+    assert_array_almost_equal(calculate_impedance(carsons_model),
+                              expected_result, decimal=4)
