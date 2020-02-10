@@ -286,6 +286,10 @@ class MultiConductorCarsonsEquations(CarsonsEquations):
             model.insulation_thickness
 
     def compute_d(self, i, j) -> float:
+        # Assumptions:
+        # 1. All conductors in the cable are touching each other and therefore equidistant.
+        # 2. In case of quadruplex cables, the space between conductors which are
+        #    diagonally positioned is neglected.
         return (self.radius[i] + self.radius[j]
                 + self.insulation_thickness[i] + self.insulation_thickness[j])
 
