@@ -201,7 +201,38 @@ class CarsonsEquations():
         return ["A", "B", "C"] + neutral_conductors
 
 
-class ConcentricNeutralCarsonsEquations(CarsonsEquations):
+class ModifiedCarsonsEquations(CarsonsEquations):
+    """
+    Modified Carson's Equation. Two approximations are made:
+    only the first term of P and the first two terms of Q are considered.
+    """
+    number_of_P_terms = 1
+
+    def compute_R(self, i, j) -> float:
+        rᵢ = self.r[i]
+        ΔR = self.μ * self.ω / π * super().compute_P(i, j, self.number_of_P_terms)
+
+        if i == j:
+            return rᵢ + ΔR
+        else:
+            return ΔR
+
+    def compute_X(self, i, j) -> float:
+        Q_first_term = super().compute_Q(i, j, 1)
+
+        # Simplify equations and don't compute Dᵢⱼ explicitly
+        kᵢⱼ_Dᵢⱼ_ratio = sqrt(self.ω * self.μ / self.ρ)
+        ΔX = Q_first_term * 2 + log(2)
+
+        if i == j:
+            X_o = -log(self.gmr[i]) - log(kᵢⱼ_Dᵢⱼ_ratio)
+        else:
+            X_o = -log(self.compute_d(i, j)) - log(kᵢⱼ_Dᵢⱼ_ratio)
+
+        return (X_o + ΔX) * self.ω * self.μ / (2 * π)
+
+
+class ConcentricNeutralCarsonsEquations(ModifiedCarsonsEquations):
     def __init__(self, model, *args, **kwargs):
         super().__init__(model)
         self.neutral_strand_gmr: Dict[str, float] = model.neutral_strand_gmr
@@ -256,20 +287,6 @@ class ConcentricNeutralCarsonsEquations(CarsonsEquations):
             # Distance between two neutral/phase conductors
             return distance_ij
 
-    def compute_X(self, i, j) -> float:
-        Q_first_term = super().compute_Q(i, j, 1)
-
-        # Simplify equations and don't compute Dᵢⱼ explicitly
-        kᵢⱼ_Dᵢⱼ_ratio = sqrt(self.ω * self.μ / self.ρ)
-        ΔX = Q_first_term * 2 + log(2)
-
-        if i == j:
-            X_o = -log(self.gmr[i]) - log(kᵢⱼ_Dᵢⱼ_ratio)
-        else:
-            X_o = -log(self.compute_d(i, j)) - log(kᵢⱼ_Dᵢⱼ_ratio)
-
-        return (X_o + ΔX) * self.ω * self.μ / (2 * π)
-
     def GMR_cn(self, phase) -> float:
         GMR_s = self.neutral_strand_gmr[phase]
         k = self.neutral_strand_count[phase]
@@ -277,7 +294,7 @@ class ConcentricNeutralCarsonsEquations(CarsonsEquations):
         return (GMR_s * k * R**(k-1))**(1/k)
 
 
-class MultiConductorCarsonsEquations(CarsonsEquations):
+class MultiConductorCarsonsEquations(ModifiedCarsonsEquations):
     def __init__(self, model):
         super().__init__(model)
         self.radius: Dict[str, float] = model.radius
