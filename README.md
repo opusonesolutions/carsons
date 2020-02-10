@@ -146,6 +146,48 @@ cable_impedance = calculate_impedance(ConcentricNeutralCarsonsEquations(Cable())
 For examples of how to use the model, see the [concentric cable
 tests](https://github.com/opusonesolutions/carsons/blob/master/tests/test_concentric_neutral_cable.py).
 
+### Multi-Conductor Cable
+
+`carsons` also supports modelling of phased duplex, triplex, quadruplex cables and triplex secondary.
+It only requires a few more parameters to describe cable's geometry.
+
+A flag `is_secondary` is used to identify whether a cable is a triplex secondary. The impedance result
+is a 2 x 2 matrix with each row and column being its secondary conductors.
+
+```python
+from carsons import (MultiConductorCarsonsEquations,
+                     calculate_impedance)
+
+class Cable:
+    resistance: {
+        'A': per-length resistance of conductor A in ohm/meters
+        ...
+    }
+    geometric_mean_radius: {
+        'A': geometric mean radius of conductor A in meters
+        ...
+    }
+    wire_positions: {
+        'A': (x, y) cross-sectional position of conductor A in meters
+        ...
+    }
+    radius: {
+        'A': radius of conductor A
+        ...
+    }
+    insulation_thickness: {
+        'A': insulation thickness of conductor A
+        ...
+    }
+    phases: {'A', ... }
+    is_secondary: True
+
+cable_impedance = calculate_impedance(MultiConductorCarsonsEquations(Cable()))
+```
+
+For examples of how to use the model, see the [multi-conductor cable
+tests](https://github.com/opusonesolutions/carsons/blob/master/tests/test_multi_conductor.py).
+
 Problem Description
 -------------------
 
