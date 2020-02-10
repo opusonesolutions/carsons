@@ -210,7 +210,8 @@ class ModifiedCarsonsEquations(CarsonsEquations):
 
     def compute_R(self, i, j) -> float:
         rᵢ = self.r[i]
-        ΔR = self.μ * self.ω / π * super().compute_P(i, j, self.number_of_P_terms)
+        ΔR = self.μ * self.ω / π * super().compute_P(
+            i, j, self.number_of_P_terms)
 
         if i == j:
             return rᵢ + ΔR
@@ -304,9 +305,10 @@ class MultiConductorCarsonsEquations(ModifiedCarsonsEquations):
 
     def compute_d(self, i, j) -> float:
         # Assumptions:
-        # 1. All conductors in the cable are touching each other and therefore equidistant.
-        # 2. In case of quadruplex cables, the space between conductors which are
-        #    diagonally positioned is neglected.
+        # 1. All conductors in the cable are touching each other and
+        #    therefore equidistant.
+        # 2. In case of quadruplex cables, the space between conductors
+        #    which are diagonally positioned is neglected.
         return (self.radius[i] + self.radius[j]
                 + self.insulation_thickness[i] + self.insulation_thickness[j])
 
