@@ -81,17 +81,11 @@ class CarsonsEquations():
         self.ω = 2.0 * π * self.ƒ  # angular frequency radians / second
 
     def build_z_primitive(self) -> ndarray:
-        neutral_conductors = sorted([
-            ph for ph in self.phases
-            if ph.startswith("N")
-        ])
-        conductors = ["A", "B", "C"] + neutral_conductors
-
-        dimension = len(conductors)
+        dimension = len(self.conductors)
         z_primitive = zeros(shape=(dimension, dimension), dtype=complex)
 
-        for index_i, phase_i in enumerate(conductors):
-            for index_j, phase_j in enumerate(conductors):
+        for index_i, phase_i in enumerate(self.conductors):
+            for index_j, phase_j in enumerate(self.conductors):
                 if phase_i not in self.phases or phase_j not in self.phases:
                     continue
                 R = self.compute_R(phase_i, phase_j)
@@ -197,6 +191,15 @@ class CarsonsEquations():
     def dimension(self):
         return 2 if getattr(self, 'secondary', False) else 3
 
+    @property
+    def conductors(self):
+        neutral_conductors = sorted([
+            ph for ph in self.phases
+            if ph.startswith("N")
+        ])
+
+        return ["A", "B", "C"] + neutral_conductors
+
 
 class ConcentricNeutralCarsonsEquations(CarsonsEquations):
     def __init__(self, model, *args, **kwargs):
@@ -282,7 +285,15 @@ class MultiConductorCarsonsEquations(CarsonsEquations):
         self.insulation_thickness: Dict[str, float] = \
             model.insulation_thickness
 
-    def build_z_primitive(self) -> ndarray:
+    def compute_d(self, i, j) -> float:
+        return (self.radius[i] + self.radius[j]
+                + self.insulation_thickness[i] + self.insulation_thickness[j])
+
+    def compute_D(self, i, j) -> float:
+        return self.phase_positions[i][1] + self.phase_positions[j][1]
+
+    @property
+    def conductors(self):
         neutral_conductors = sorted([
             ph for ph in self.phases
             if ph.startswith("N")
@@ -299,22 +310,4 @@ class MultiConductorCarsonsEquations(CarsonsEquations):
         else:
             conductors = ["A", "B", "C"] + neutral_conductors
 
-        dimension = len(conductors)
-        z_primitive = zeros(shape=(dimension, dimension), dtype=complex)
-
-        for index_i, phase_i in enumerate(conductors):
-            for index_j, phase_j in enumerate(conductors):
-                if phase_i not in self.phases or phase_j not in self.phases:
-                    continue
-                R = self.compute_R(phase_i, phase_j)
-                X = self.compute_X(phase_i, phase_j)
-                z_primitive[index_i, index_j] = complex(R, X)
-
-        return z_primitive
-
-    def compute_d(self, i, j) -> float:
-        return (self.radius[i] + self.radius[j]
-                + self.insulation_thickness[i] + self.insulation_thickness[j])
-
-    def compute_D(self, i, j) -> float:
-        return self.phase_positions[i][1] + self.phase_positions[j][1]
+        return conductors
