@@ -304,9 +304,6 @@ class MultiConductorCarsonsEquations(ModifiedCarsonsEquations):
         return (self.radius[i] + self.radius[j]
                 + self.insulation_thickness[i] + self.insulation_thickness[j])
 
-    def compute_D(self, i, j) -> float:
-        return self.phase_positions[i][1] + self.phase_positions[j][1]
-
     @property
     def conductors(self):
         neutral_conductors = sorted([
