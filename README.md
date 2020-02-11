@@ -187,23 +187,23 @@ is a 2 x 2 matrix.
 ```python
 class Cable:
     resistance: {
-        'S1': per-length resistance of conductor A in ohm/meters
+        'S1': per-length resistance of conductor S1 in ohm/meters
         ...
     }
     geometric_mean_radius: {
-        'S1': geometric mean radius of conductor A in meters
+        'S1': geometric mean radius of conductor S1 in meters
         ...
     }
     wire_positions: {
-        'S1': (x, y) cross-sectional position of conductor A in meters
+        'S1': (x, y) cross-sectional position of conductor S1 in meters
         ...
     }
     radius: {
-        'S1': radius of conductor A
+        'S1': radius of conductor S1
         ...
     }
     insulation_thickness: {
-        'S1': insulation thickness of conductor A
+        'S1': insulation thickness of conductor S1
         ...
     }
     phases: {'S1', ... }
