@@ -146,6 +146,72 @@ cable_impedance = calculate_impedance(ConcentricNeutralCarsonsEquations(Cable())
 For examples of how to use the model, see the [concentric cable
 tests](https://github.com/opusonesolutions/carsons/blob/master/tests/test_concentric_neutral_cable.py).
 
+### Multi-Conductor Cable
+
+`carsons` also supports modelling of phased duplex, triplex, quadruplex cables and triplex secondary.
+It only requires a few more parameters to describe cable's geometry.
+
+```python
+from carsons import (MultiConductorCarsonsEquations,
+                     calculate_impedance)
+
+class Cable:
+    resistance: {
+        'A': per-length resistance of conductor A in ohm/meters
+        ...
+    }
+    geometric_mean_radius: {
+        'A': geometric mean radius of conductor A in meters
+        ...
+    }
+    wire_positions: {
+        'A': (x, y) cross-sectional position of conductor A in meters
+        ...
+    }
+    radius: {
+        'A': radius of conductor A
+        ...
+    }
+    insulation_thickness: {
+        'A': insulation thickness of conductor A
+        ...
+    }
+    phases: {'A', ... }
+
+cable_impedance = calculate_impedance(MultiConductorCarsonsEquations(Cable()))
+```
+
+To model a triplex secondary cable, the inputs should be keyed on secondary conductors `S1` and `S2`. The impedance result
+is a 2 x 2 matrix.
+
+```python
+class Cable:
+    resistance: {
+        'S1': per-length resistance of conductor S1 in ohm/meters
+        ...
+    }
+    geometric_mean_radius: {
+        'S1': geometric mean radius of conductor S1 in meters
+        ...
+    }
+    wire_positions: {
+        'S1': (x, y) cross-sectional position of conductor S1 in meters
+        ...
+    }
+    radius: {
+        'S1': radius of conductor S1
+        ...
+    }
+    insulation_thickness: {
+        'S1': insulation thickness of conductor S1
+        ...
+    }
+    phases: {'S1', ... }
+```
+
+For examples of how to use the model, see the [multi-conductor cable
+tests](https://github.com/opusonesolutions/carsons/blob/master/tests/test_multi_conductor.py).
+
 Problem Description
 -------------------
 
