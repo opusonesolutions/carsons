@@ -151,9 +151,6 @@ tests](https://github.com/opusonesolutions/carsons/blob/master/tests/test_concen
 `carsons` also supports modelling of phased duplex, triplex, quadruplex cables and triplex secondary.
 It only requires a few more parameters to describe cable's geometry.
 
-A flag `is_secondary` is used to identify whether a cable is a triplex secondary. The impedance result
-is a 2 x 2 matrix with each row and column being its secondary conductors.
-
 ```python
 from carsons import (MultiConductorCarsonsEquations,
                      calculate_impedance)
@@ -180,9 +177,36 @@ class Cable:
         ...
     }
     phases: {'A', ... }
-    is_secondary: True
 
 cable_impedance = calculate_impedance(MultiConductorCarsonsEquations(Cable()))
+```
+
+To model a triplex secondary cable, the inputs should be keyed on secondary conductors `S1` and `S2`. The impedance result
+is a 2 x 2 matrix.
+
+```python
+class Cable:
+    resistance: {
+        'S1': per-length resistance of conductor A in ohm/meters
+        ...
+    }
+    geometric_mean_radius: {
+        'S1': geometric mean radius of conductor A in meters
+        ...
+    }
+    wire_positions: {
+        'S1': (x, y) cross-sectional position of conductor A in meters
+        ...
+    }
+    radius: {
+        'S1': radius of conductor A
+        ...
+    }
+    insulation_thickness: {
+        'S1': insulation thickness of conductor A
+        ...
+    }
+    phases: {'S1', ... }
 ```
 
 For examples of how to use the model, see the [multi-conductor cable

@@ -59,7 +59,7 @@ def test_triplex_secondary():
     }
     neutral_conductor = {**conductor, 'insulation_thickness': 0}
     multi_line_model = MultiLineModel(
-        {'A': phase_conductor, 'N': neutral_conductor}, is_secondary=True
+        {'S1': phase_conductor, 'S2': phase_conductor, 'N': neutral_conductor}
     )
     carsons_model = MultiConductorCarsonsEquations(multi_line_model)
 

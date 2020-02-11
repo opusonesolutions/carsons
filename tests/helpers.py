@@ -106,7 +106,6 @@ class MultiLineModel:
             self._insulation_thickness[phase] = val['insulation_thickness']
 
         self._phases = sorted(list(conductors.keys()))
-        self._secondary = is_secondary
 
     @property
     def resistance(self):
@@ -131,7 +130,3 @@ class MultiLineModel:
     @property
     def insulation_thickness(self):
         return self._insulation_thickness
-
-    @property
-    def secondary(self):
-        return self._secondary

@@ -189,7 +189,7 @@ class CarsonsEquations():
 
     @property
     def dimension(self):
-        return 2 if getattr(self, 'secondary', False) else 3
+        return 2 if getattr(self, 'is_secondary', False) else 3
 
     @property
     def conductors(self):
@@ -299,7 +299,6 @@ class MultiConductorCarsonsEquations(ModifiedCarsonsEquations):
     def __init__(self, model):
         super().__init__(model)
         self.radius: Dict[str, float] = model.radius
-        self.secondary: bool = model.secondary
         self.insulation_thickness: Dict[str, float] = \
             model.insulation_thickness
 
@@ -318,19 +317,19 @@ class MultiConductorCarsonsEquations(ModifiedCarsonsEquations):
     @property
     def conductors(self):
         neutral_conductors = sorted([
-            ph for ph in self.phases
-            if ph.startswith("N")
+            ph for ph in self.phases if ph.startswith("N")
         ])
-        if self.secondary:
-            secondary_conductors = ['S1', 'S2']
-            conductors = secondary_conductors + neutral_conductors
-            ph = (set(self.phases) - set(neutral_conductors)).pop()
-            for k, v in self.__dict__.items():
-                if isinstance(v, dict):
-                    prop = v.pop(ph)
-                    v.update({k: prop for k in secondary_conductors})
-            self.phases = conductors
+        if self.is_secondary:
+            conductors = ["S1", "S2"] + neutral_conductors
         else:
             conductors = ["A", "B", "C"] + neutral_conductors
 
         return conductors
+
+    @property
+    def is_secondary(self):
+        phase_conductors = [ph for ph in self.phases if not ph.startswith('N')]
+        if phase_conductors == ["S1", "S2"]:
+            return True
+        else:
+            return False
