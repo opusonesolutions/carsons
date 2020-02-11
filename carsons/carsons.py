@@ -208,15 +208,8 @@ class ModifiedCarsonsEquations(CarsonsEquations):
     """
     number_of_P_terms = 1
 
-    def compute_R(self, i, j) -> float:
-        rᵢ = self.r[i]
-        ΔR = self.μ * self.ω / π * super().compute_P(
-            i, j, self.number_of_P_terms)
-
-        if i == j:
-            return rᵢ + ΔR
-        else:
-            return ΔR
+    def compute_P(self, i, j, number_of_terms=1) -> float:
+        return super().compute_P(i, j, self.number_of_P_terms)
 
     def compute_X(self, i, j) -> float:
         Q_first_term = super().compute_Q(i, j, 1)
