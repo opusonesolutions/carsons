@@ -291,9 +291,7 @@ class ConcentricNeutralCarsonsEquations(ModifiedCarsonsEquations):
 class MultiConductorCarsonsEquations(ModifiedCarsonsEquations):
     def __init__(self, model):
         super().__init__(model)
-        self.radius: Dict[str, float] = model.radius
-        self.insulation_thickness: Dict[str, float] = \
-            model.insulation_thickness
+        self.outside_radius: Dict[str, float] = model.outside_radius
 
     def compute_d(self, i, j) -> float:
         # Assumptions:
@@ -301,8 +299,7 @@ class MultiConductorCarsonsEquations(ModifiedCarsonsEquations):
         #    therefore equidistant.
         # 2. In case of quadruplex cables, the space between conductors
         #    which are diagonally positioned is neglected.
-        return (self.radius[i] + self.radius[j]
-                + self.insulation_thickness[i] + self.insulation_thickness[j])
+        return self.outside_radius[i] + self.outside_radius[j]
 
     @property
     def conductors(self):
