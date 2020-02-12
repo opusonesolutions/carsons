@@ -95,15 +95,13 @@ class MultiLineModel:
         self._resistance = {}
         self._geometric_mean_radius = {}
         self._wire_positions = {}
-        self._radius = {}
-        self._insulation_thickness = {}
+        self._outside_radius = {}
 
         for phase, val in conductors.items():
             self._resistance[phase] = val['resistance']
             self._geometric_mean_radius[phase] = val['gmr']
             self._wire_positions[phase] = val['wire_positions']
-            self._radius[phase] = val['radius']
-            self._insulation_thickness[phase] = val['insulation_thickness']
+            self._outside_radius[phase] = val['outside_radius']
 
         self._phases = sorted(list(conductors.keys()))
 
@@ -124,9 +122,5 @@ class MultiLineModel:
         return self._phases
 
     @property
-    def radius(self):
-        return self._radius
-
-    @property
-    def insulation_thickness(self):
-        return self._insulation_thickness
+    def outside_radius(self):
+        return self._outside_radius
