@@ -168,8 +168,8 @@ class Cable:
         'A': (x, y) cross-sectional position of conductor A in meters
         ...
     }
-    radius: {
-        'A': radius of conductor A
+    outside_radius: {
+        'A': outside radius of conductor A, including insulation and jacket thickness
         ...
     }
     insulation_thickness: {
@@ -198,8 +198,8 @@ class Cable:
         'S1': (x, y) cross-sectional position of conductor S1 in meters
         ...
     }
-    radius: {
-        'S1': radius of conductor S1
+    outside_radius: {
+        'S1': outside radius of conductor S1, including insulation and jacket thickness
         ...
     }
     insulation_thickness: {
