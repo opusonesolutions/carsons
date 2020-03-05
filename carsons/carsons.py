@@ -65,6 +65,21 @@ def perform_kron_reduction(z_primitive: ndarray, dimension=3) -> ndarray:
     return Z_abc
 
 
+calc_zself = lambda Z: (Z[0,0] + Z[1,1] + Z[2,2])/3
+calc_zmut = lambda Z: (Z[0,1] + Z[1,2] + Z[0,2])/3
+
+calc_z0 = lambda zs, zm: zs + 2*zm
+calc_z1 = lambda zs, zm: zs - zm
+
+def calculate_sequence_impedance(Z):
+    zs = calc_zself(Z)
+    zm = calc_zmut(Z)
+    
+    z0 = calc_z0(zs, zm)
+    z1 = calc_z1(zs, zm)
+    
+    return z0, z1
+
 class CarsonsEquations():
 
     ρ = 100  # resistivity, ohms/meter^3
@@ -176,6 +191,12 @@ class CarsonsEquations():
         xⱼ, yⱼ = self.phase_positions[j]
 
         return self.calculate_distance(self.phase_positions[i], (xⱼ, -yⱼ))
+
+    def compute_C(self, i, j) -> float:
+        xᵢ, yᵢ = self.phase_positions[i]
+        xⱼ, yⱼ = self.phase_positions[j]        
+
+
 
     @staticmethod
     def calculate_distance(positionᵢ, positionⱼ) -> float:
