@@ -65,18 +65,18 @@ def perform_kron_reduction(z_primitive: ndarray, dimension=3) -> ndarray:
     return Z_abc
 
 
-calc_zself = lambda Z: (Z[0,0] + Z[1,1] + Z[2,2])/3
-calc_zmut = lambda Z: (Z[0,1] + Z[1,2] + Z[0,2])/3
+calculate_zself = lambda Z: (Z[0,0] + Z[1,1] + Z[2,2])/3
+calculate_zmut = lambda Z: (Z[0,1] + Z[1,2] + Z[0,2])/3
 
-calc_z0 = lambda zs, zm: zs + 2*zm
-calc_z1 = lambda zs, zm: zs - zm
+calculate_z0 = lambda zs, zm: zs + 2*zm
+calculate_z1 = lambda zs, zm: zs - zm
 
-def calculate_sequence_impedance(Z):
-    zs = calc_zself(Z)
-    zm = calc_zmut(Z)
+def calculate_sequence_impedances(Z):
+    zs = calculate_zself(Z)
+    zm = calculate_zmut(Z)
     
-    z0 = calc_z0(zs, zm)
-    z1 = calc_z1(zs, zm)
+    z0 = calculate_z0(zs, zm)
+    z1 = calculate_z1(zs, zm)
     
     return z0, z1
 
