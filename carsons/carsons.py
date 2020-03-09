@@ -65,20 +65,16 @@ def perform_kron_reduction(z_primitive: ndarray, dimension=3) -> ndarray:
     return Z_abc
 
 
-calculate_zself = lambda Z: (Z[0,0] + Z[1,1] + Z[2,2])/3
-calculate_zmut = lambda Z: (Z[0,1] + Z[1,2] + Z[0,2])/3
-
-calculate_z0 = lambda zs, zm: zs + 2*zm
 calculate_z1 = lambda zs, zm: zs - zm
 
 def calculate_sequence_impedances(Z):
-    zs = calculate_zself(Z)
-    zm = calculate_zmut(Z)
+    zs = (Z[0,0] + Z[1,1] + Z[2,2])/3
+    zm = (Z[0,1] + Z[1,2] + Z[0,2])/3
     
-    z0 = calculate_z0(zs, zm)
-    z1 = calculate_z1(zs, zm)
-    
-    return z0, z1
+    z0 = zs + 2*zm
+    z1 = zs - zm
+
+    return z1, z0
 
 class CarsonsEquations():
 
