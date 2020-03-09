@@ -4,6 +4,7 @@ from numpy import array
 from carsons.carsons import (
     CarsonsEquations,
     perform_kron_reduction,
+    calculate_sequence_impedances,
 )
 from tests.test_overhead_line import (
     ACBN_geometry_line,
@@ -136,6 +137,21 @@ def expected_z_abc_three_neutrals():
                 [-14 + 0j, -14 + 0j, -13 + 0j]])
 
 
+def z_abc_kersting_4_3():
+    return array([
+                [0.4576+1.078j, 0.1560+0.5017j, 0.1535+0.3849j],
+                [0.1560+0.5017j, 0.4666+1.*1.0482j, 0.1580+0.4236j],
+                [0.1535+0.3849j, 0.1580+0.4236j, 0.4615+1.0651j]])
+
+
+def z_1_kersting_4_3():
+    return 0.3061 + 0.6270j
+
+
+def z_0_kersting_4_3():
+    return 0.7735 + 1.9373j
+
+
 @pytest.mark.parametrize(
     "line,z_primitive_expected",
     [(ACBN_geometry_line(), ACBN_line_z_primitive()),
@@ -169,3 +185,14 @@ def test_balanced_carsons_equations(line, z_primitive_expected):
 def test_kron_reduction(z_primitive, expected_z_abc):
     actual_z_abc = perform_kron_reduction(z_primitive)
     assert (actual_z_abc == expected_z_abc).all()
+
+
+@pytest.mark.parametrize(
+    "z_abc,expected_z1,expected_z0",
+    [(z_abc_kersting_4_3(), z_1_kersting_4_3(), z_0_kersting_4_3())])
+def test_sequence_impedance(z_abc, expected_z1, expected_z0):
+    actual_z1, actual_z0 = calculate_sequence_impedances(z_abc)
+    assert actual_z1.real == pytest.approx(expected_z1.real, 0.001)
+    assert actual_z1.imag == pytest.approx(expected_z1.imag, 0.001)
+    assert actual_z0.real == pytest.approx(expected_z0.real, 0.001)
+    assert actual_z0.imag == pytest.approx(expected_z0.imag, 0.001)
