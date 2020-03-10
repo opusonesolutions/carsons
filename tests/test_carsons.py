@@ -137,18 +137,18 @@ def expected_z_abc_three_neutrals():
                 [-14 + 0j, -14 + 0j, -13 + 0j]])
 
 
-def z_abc_kersting_4_3():
+def z_abc_kersting_4_1():
     return array([
                 [0.4576+1.078j, 0.1560+0.5017j, 0.1535+0.3849j],
                 [0.1560+0.5017j, 0.4666+1.*1.0482j, 0.1580+0.4236j],
                 [0.1535+0.3849j, 0.1580+0.4236j, 0.4615+1.0651j]])
 
 
-def z_1_kersting_4_3():
+def z_1_kersting_4_1():
     return 0.3061 + 0.6270j
 
 
-def z_0_kersting_4_3():
+def z_0_kersting_4_1():
     return 0.7735 + 1.9373j
 
 
@@ -189,7 +189,7 @@ def test_kron_reduction(z_primitive, expected_z_abc):
 
 @pytest.mark.parametrize(
     "z_abc,expected_z1,expected_z0",
-    [(z_abc_kersting_4_3(), z_1_kersting_4_3(), z_0_kersting_4_3())])
+    [(z_abc_kersting_4_1(), z_1_kersting_4_1(), z_0_kersting_4_1())])
 def test_sequence_impedance(z_abc, expected_z1, expected_z0):
     actual_z1, actual_z0 = calculate_sequence_impedances(z_abc)
     assert actual_z1.real == pytest.approx(expected_z1.real, 0.001)
