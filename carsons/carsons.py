@@ -195,10 +195,6 @@ class CarsonsEquations():
 
         return self.calculate_distance(self.phase_positions[i], (xⱼ, -yⱼ))
 
-    def compute_C(self, i, j) -> float:
-        xᵢ, yᵢ = self.phase_positions[i]
-        xⱼ, yⱼ = self.phase_positions[j]
-
     @staticmethod
     def calculate_distance(positionᵢ, positionⱼ) -> float:
         xᵢ, yᵢ = positionᵢ
