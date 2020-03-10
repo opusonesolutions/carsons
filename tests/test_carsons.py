@@ -147,7 +147,7 @@ def z_abc_kersting_4_1():
 
 
 def z_012_kersting_4_1():
-    """Sequence impedance matrix from Kersting 3rd Ed., ex. 4.1"""    
+    """Sequence impedance matrix from Kersting 3rd Ed., ex. 4.1"""
     return array([
                 [0.7735+1.9373j, 0.0256+0.0115j, -0.0321+0.0159j],
                 [-0.0321+0.0159j, 0.3061+0.6270j, -0.0723-0.0060j],
@@ -160,7 +160,7 @@ def z_1_kersting_4_1():
 
 
 def z_0_kersting_4_1():
-    """Zero-sequence impedance from Kersting 3rd Ed., ex. 4.1"""    
+    """Zero-sequence impedance from Kersting 3rd Ed., ex. 4.1"""
     return 0.7735 + 1.9373j
 
 
