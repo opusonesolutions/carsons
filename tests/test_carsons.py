@@ -4,6 +4,7 @@ from numpy import array
 from carsons.carsons import (
     CarsonsEquations,
     perform_kron_reduction,
+    calculate_sequence_impedance_matrix,
     calculate_sequence_impedances,
 )
 from tests.test_overhead_line import (
@@ -144,6 +145,13 @@ def z_abc_kersting_4_1():
                 [0.1535+0.3849j, 0.1580+0.4236j, 0.4615+1.0651j]])
 
 
+def z_012_kersting_4_1():
+    return array([
+                [0.7735+1.9373j, 0.0256+0.0115j, -0.0321+0.0159j],
+                [-0.0321+0.0159j, 0.3061+0.6270j, -0.0723-0.0060j],
+                [0.0256+0.0115j, 0.0723-0.0059j, 0.3061+0.6270j]])
+
+
 def z_1_kersting_4_1():
     return 0.3061 + 0.6270j
 
@@ -185,6 +193,14 @@ def test_balanced_carsons_equations(line, z_primitive_expected):
 def test_kron_reduction(z_primitive, expected_z_abc):
     actual_z_abc = perform_kron_reduction(z_primitive)
     assert (actual_z_abc == expected_z_abc).all()
+
+
+@pytest.mark.parametrize(
+    "z_abc,z_012_expected",
+    [(z_abc_kersting_4_1(), z_012_kersting_4_1())])
+def test_sequence_impedance_matrix(z_abc, z_012_expected):
+    z_012_computed = calculate_sequence_impedance_matrix(z_abc)
+    assert_array_almost_equal(z_012_expected, z_012_computed, decimal=0.001)
 
 
 @pytest.mark.parametrize(

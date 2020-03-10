@@ -5,22 +5,22 @@ from typing import Dict, Iterable, Iterator, Tuple
 
 from numpy import arctan, cos, log, sin, sqrt, zeros, exp
 from numpy import matmul
-from numpy import ndarray
+from numpy import array, ndarray
 from numpy import pi as π
 from numpy.linalg import inv
 
-⍺ = exp(2j*π/3)
+alpha = exp(2j*π/3)
 
-A = ndarray([
+A = array([
             [1, 1, 1],
-            [1, ⍺**2, ⍺],
-            [1, ⍺, ⍺**2],
+            [1, alpha**2, alpha],
+            [1, alpha, alpha**2],
 ])
 
-A⁻¹ = ndarray([
-            [1, 1, 1],
-            [1, ⍺, ⍺**2],
-            [1, ⍺**2, ⍺],
+Ainv = (1/3)*array([
+                [1, 1, 1],
+                [1, alpha, alpha**2],
+                [1, alpha**2, alpha],
 ])
 
 def convert_geometric_model(geometric_model) -> ndarray:
@@ -81,7 +81,7 @@ def perform_kron_reduction(z_primitive: ndarray, dimension=3) -> ndarray:
 
 
 def calculate_sequence_impedance_matrix(Z):
-    return reduce(matmul, [A⁻¹, Z, A])
+    return reduce(matmul, [Ainv, Z, A])
 
 
 def calculate_sequence_impedances(Z):
