@@ -139,6 +139,7 @@ def expected_z_abc_three_neutrals():
 
 
 def z_abc_kersting_4_1():
+    """Kron-reduced impedance matrix from Kersting 3rd Ed., ex. 4.1"""
     return array([
                 [0.4576+1.078j, 0.1560+0.5017j, 0.1535+0.3849j],
                 [0.1560+0.5017j, 0.4666+1.*1.0482j, 0.1580+0.4236j],
@@ -146,6 +147,7 @@ def z_abc_kersting_4_1():
 
 
 def z_012_kersting_4_1():
+    """Sequence impedance matrix from Kersting 3rd Ed., ex. 4.1"""    
     return array([
                 [0.7735+1.9373j, 0.0256+0.0115j, -0.0321+0.0159j],
                 [-0.0321+0.0159j, 0.3061+0.6270j, -0.0723-0.0060j],
@@ -153,10 +155,12 @@ def z_012_kersting_4_1():
 
 
 def z_1_kersting_4_1():
+    """Positive-sequence impedance from Kersting 3rd Ed., ex. 4.1"""
     return 0.3061 + 0.6270j
 
 
 def z_0_kersting_4_1():
+    """Zero-sequence impedance from Kersting 3rd Ed., ex. 4.1"""    
     return 0.7735 + 1.9373j
 
 

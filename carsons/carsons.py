@@ -1,10 +1,8 @@
 from collections import defaultdict
 from itertools import islice
-from functools import reduce
 from typing import Dict, Iterable, Iterator, Tuple
 
 from numpy import arctan, cos, log, sin, sqrt, zeros, exp
-from numpy import matmul
 from numpy import array, ndarray
 from numpy import pi as π
 from numpy.linalg import inv
@@ -82,7 +80,7 @@ def perform_kron_reduction(z_primitive: ndarray, dimension=3) -> ndarray:
 
 
 def calculate_sequence_impedance_matrix(Z):
-    return reduce(matmul, [Ainv, Z, A])
+    return Ainv @ Z @ A
 
 
 def calculate_sequence_impedances(Z):
