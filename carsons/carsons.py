@@ -23,6 +23,7 @@ Ainv = (1/3)*array([
                 [1, alpha**2, alpha],
 ])
 
+
 def convert_geometric_model(geometric_model) -> ndarray:
     carsons_model = CarsonsEquations(geometric_model)
 
@@ -86,7 +87,7 @@ def calculate_sequence_impedance_matrix(Z):
 
 def calculate_sequence_impedances(Z):
     Z012 = calculate_sequence_impedance_matrix(Z)
-    return Z012[1,1], Z012[0,0]
+    return Z012[1, 1], Z012[0, 0]
 
 
 class CarsonsEquations():
