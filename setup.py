@@ -42,6 +42,8 @@ setup(
     zip_safe=False,
     extras_require={
         "test": [
+            "flake8",
+            "coveralls",
             "pytest>=3.6",
             "pytest-cov",
             "pytest-mypy",
