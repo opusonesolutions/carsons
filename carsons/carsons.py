@@ -2,10 +2,24 @@ from collections import defaultdict
 from itertools import islice
 from typing import Dict, Iterable, Iterator, Tuple
 
-from numpy import arctan, cos, log, sin, sqrt, zeros
-from numpy import ndarray
+from numpy import arctan, cos, log, sin, sqrt, zeros, exp
+from numpy import array, ndarray
 from numpy import pi as π
 from numpy.linalg import inv
+
+alpha = exp(2j*π/3)
+
+A = array([
+            [1, 1, 1],
+            [1, alpha**2, alpha],
+            [1, alpha, alpha**2],
+])
+
+Ainv = (1/3)*array([
+                [1, 1, 1],
+                [1, alpha, alpha**2],
+                [1, alpha**2, alpha],
+])
 
 
 def convert_geometric_model(geometric_model) -> ndarray:
@@ -18,11 +32,12 @@ def convert_geometric_model(geometric_model) -> ndarray:
 
 def calculate_impedance(model) -> ndarray:
     z_primitive = model.build_z_primitive()
-    z_abc = perform_kron_reduction(z_primitive)
+    z_abc = perform_kron_reduction(z_primitive, dimension=model.dimension)
+
     return z_abc
 
 
-def perform_kron_reduction(z_primitive: ndarray) -> ndarray:
+def perform_kron_reduction(z_primitive: ndarray, dimension=3) -> ndarray:
     """ Reduces the primitive impedance matrix to an equivalent impedance
         matrix.
 
@@ -56,10 +71,21 @@ def perform_kron_reduction(z_primitive: ndarray) -> ndarray:
                             [Zba, Zbb, Zbc]
                             [Zca, Zcb, Zcc]
     """
-    Ẑpp, Ẑpn = z_primitive[0:3, 0:3], z_primitive[0:3, 3:]
-    Ẑnp, Ẑnn = z_primitive[3:,  0:3], z_primitive[3:,  3:]
+    Ẑpp, Ẑpn = (z_primitive[0:dimension, 0:dimension],
+                z_primitive[0:dimension, dimension:])
+    Ẑnp, Ẑnn = (z_primitive[dimension:,  0:dimension],
+                z_primitive[dimension:,  dimension:])
     Z_abc = Ẑpp - Ẑpn @ inv(Ẑnn) @ Ẑnp
     return Z_abc
+
+
+def calculate_sequence_impedance_matrix(Z):
+    return Ainv @ Z @ A
+
+
+def calculate_sequence_impedances(Z):
+    Z012 = calculate_sequence_impedance_matrix(Z)
+    return Z012[1, 1], Z012[0, 0]
 
 
 class CarsonsEquations():
@@ -78,17 +104,11 @@ class CarsonsEquations():
         self.ω = 2.0 * π * self.ƒ  # angular frequency radians / second
 
     def build_z_primitive(self) -> ndarray:
-        neutral_conductors = sorted([
-            ph for ph in self.phases
-            if ph.startswith("N")
-        ])
-        conductors = ["A", "B", "C"] + neutral_conductors
-
-        dimension = len(conductors)
+        dimension = len(self.conductors)
         z_primitive = zeros(shape=(dimension, dimension), dtype=complex)
 
-        for index_i, phase_i in enumerate(conductors):
-            for index_j, phase_j in enumerate(conductors):
+        for index_i, phase_i in enumerate(self.conductors):
+            for index_j, phase_j in enumerate(self.conductors):
                 if phase_i not in self.phases or phase_j not in self.phases:
                     continue
                 R = self.compute_R(phase_i, phase_j)
@@ -190,8 +210,46 @@ class CarsonsEquations():
         _, yᵢ = self.phase_positions[i]
         return yᵢ
 
+    @property
+    def dimension(self):
+        return 2 if getattr(self, 'is_secondary', False) else 3
 
-class ConcentricNeutralCarsonsEquations(CarsonsEquations):
+    @property
+    def conductors(self):
+        neutral_conductors = sorted([
+            ph for ph in self.phases
+            if ph.startswith("N")
+        ])
+
+        return ["A", "B", "C"] + neutral_conductors
+
+
+class ModifiedCarsonsEquations(CarsonsEquations):
+    """
+    Modified Carson's Equation. Two approximations are made:
+    only the first term of P and the first two terms of Q are considered.
+    """
+    number_of_P_terms = 1
+
+    def compute_P(self, i, j, number_of_terms=1) -> float:
+        return super().compute_P(i, j, self.number_of_P_terms)
+
+    def compute_X(self, i, j) -> float:
+        Q_first_term = super().compute_Q(i, j, 1)
+
+        # Simplify equations and don't compute Dᵢⱼ explicitly
+        kᵢⱼ_Dᵢⱼ_ratio = sqrt(self.ω * self.μ / self.ρ)
+        ΔX = Q_first_term * 2 + log(2)
+
+        if i == j:
+            X_o = -log(self.gmr[i]) - log(kᵢⱼ_Dᵢⱼ_ratio)
+        else:
+            X_o = -log(self.compute_d(i, j)) - log(kᵢⱼ_Dᵢⱼ_ratio)
+
+        return (X_o + ΔX) * self.ω * self.μ / (2 * π)
+
+
+class ConcentricNeutralCarsonsEquations(ModifiedCarsonsEquations):
     def __init__(self, model, *args, **kwargs):
         super().__init__(model)
         self.neutral_strand_gmr: Dict[str, float] = model.neutral_strand_gmr
@@ -246,20 +304,6 @@ class ConcentricNeutralCarsonsEquations(CarsonsEquations):
             # Distance between two neutral/phase conductors
             return distance_ij
 
-    def compute_X(self, i, j) -> float:
-        Q_first_term = super().compute_Q(i, j, 1)
-
-        # Simplify equations and don't compute Dᵢⱼ explicitly
-        kᵢⱼ_Dᵢⱼ_ratio = sqrt(self.ω * self.μ / self.ρ)
-        ΔX = Q_first_term * 2 + log(2)
-
-        if i == j:
-            X_o = -log(self.gmr[i]) - log(kᵢⱼ_Dᵢⱼ_ratio)
-        else:
-            X_o = -log(self.compute_d(i, j)) - log(kᵢⱼ_Dᵢⱼ_ratio)
-
-        return (X_o + ΔX) * self.ω * self.μ / (2 * π)
-
     def GMR_cn(self, phase) -> float:
         GMR_s = self.neutral_strand_gmr[phase]
         k = self.neutral_strand_count[phase]
@@ -267,7 +311,7 @@ class ConcentricNeutralCarsonsEquations(CarsonsEquations):
         return (GMR_s * k * R**(k-1))**(1/k)
 
 
-class TapeShieldedCable(CarsonsEquations):
+class TapeShieldedCableCarsonsEquations(ModifiedCarsonsEquations):
 
     ρ_tape_shield = 1.7721e-8  # copper resistivity at 20 degrees, ohm-meter
 
@@ -324,10 +368,8 @@ class TapeShieldedCable(CarsonsEquations):
         return (ds - thickness) / 2
 
     def compute_shield_r(self, ds, thickness) -> float:
-        # area = (π*(ds/2 + thickness)**2) - (π*(ds/2)**2)
-        # return self.ρ_tape_shield/area
-        # TODO: cannot get the resistance formula to match
-        return 0.00266170564
+        area = (π*(ds/2)**2) - (π*(ds/2 - thickness)**2)
+        return self.ρ_tape_shield/area
 
     def compute_d(self, i, j) -> float:
         I, J = set(i), set(j)
@@ -353,3 +395,37 @@ class TapeShieldedCable(CarsonsEquations):
             X_o = -log(self.compute_d(i, j)) - log(kᵢⱼ_Dᵢⱼ_ratio)
 
         return (X_o + ΔX) * self.ω * self.μ / (2 * π)
+
+
+class MultiConductorCarsonsEquations(ModifiedCarsonsEquations):
+    def __init__(self, model):
+        super().__init__(model)
+        self.outside_radius: Dict[str, float] = model.outside_radius
+
+    def compute_d(self, i, j) -> float:
+        # Assumptions:
+        # 1. All conductors in the cable are touching each other and
+        #    therefore equidistant.
+        # 2. In case of quadruplex cables, the space between conductors
+        #    which are diagonally positioned is neglected.
+        return self.outside_radius[i] + self.outside_radius[j]
+
+    @property
+    def conductors(self):
+        neutral_conductors = sorted([
+            ph for ph in self.phases if ph.startswith("N")
+        ])
+        if self.is_secondary:
+            conductors = ["S1", "S2"] + neutral_conductors
+        else:
+            conductors = ["A", "B", "C"] + neutral_conductors
+
+        return conductors
+
+    @property
+    def is_secondary(self):
+        phase_conductors = [ph for ph in self.phases if not ph.startswith('N')]
+        if phase_conductors == ["S1", "S2"]:
+            return True
+        else:
+            return False

@@ -54,11 +54,11 @@ from carsons import CarsonsEquations, calculate_impedance
 
 class Line:
    geometric_mean_radius: {
-       'A': geometric_mean_radius_A
+       'A': geometric_mean_radius_A in meters
        ...
    }
    resistance: {
-        'A': per-length resistance of conductor A in ohms
+        'A': per-length resistance of conductor A in ohms/meters
         ...
    }
    wire_positions: {
@@ -105,46 +105,112 @@ object.
 from carsons import (ConcentricNeutralCarsonsEquations,
                      calculate_impedance)
 
-class Line:
+class Cable:
    resistance: {
-       'A': per-length resistance of conductor A in ohms
+       'A': per-length resistance of conductor A in ohm/meters
        ...
    }
    geometric_mean_radius: {
-       'A': geometric_mean_radius_A
+       'A': geometric mean radius of conductor A in meters
        ...
    }
    wire_positions: {
-        'A': (x, y) cross-sectional position of the conductor in meters
+        'A': (x, y) cross-sectional position of conductor A in meters
         ...
    }
    phases: {'A', 'NA', ... }
    neutral_strand_gmr: {
-       'NA': neutral_strand_gmr_A
+       'NA': neutral strand gmr of phase A in meters
        ...
    }
    neutral_strand_resistance: {
-       'NA': neutral_strand_resistance_A
+       'NA': neutral strand resistance of phase A in ohm/meters
        ...
    }
    neutral_strand_diameter: {
-       'NA': neutral_strand_diameter_A
+       'NA': neutral strand diameter of phase A in meters
        ...
    }
    diameter_over_neutral: {
-       'NA': diameter_over_neutral_A
+       'NA': diameter over neutral of phase A in meters
        ...
    }
    neutral_strand_count: {
-       'NA': neutral_strand_count_A
+       'NA': neutral strand count of phase A
        ...
    }
 
-line_impedance = calculate_impedance(ConcentricNeutralCarsonsEquations(Line()))
+cable_impedance = calculate_impedance(ConcentricNeutralCarsonsEquations(Cable()))
 ```
 
 For examples of how to use the model, see the [concentric cable
 tests](https://github.com/opusonesolutions/carsons/blob/master/tests/test_concentric_neutral_cable.py).
+
+### Multi-Conductor Cable
+
+`carsons` also supports modelling of phased duplex, triplex, quadruplex cables and triplex secondary.
+It only requires a few more parameters to describe cable's geometry.
+
+```python
+from carsons import (MultiConductorCarsonsEquations,
+                     calculate_impedance)
+
+class Cable:
+    resistance: {
+        'A': per-length resistance of conductor A in ohm/meters
+        ...
+    }
+    geometric_mean_radius: {
+        'A': geometric mean radius of conductor A in meters
+        ...
+    }
+    wire_positions: {
+        'A': (x, y) cross-sectional position of conductor A in meters
+        ...
+    }
+    outside_radius: {
+        'A': outside radius of conductor A, including insulation and jacket thickness
+        ...
+    }
+    insulation_thickness: {
+        'A': insulation thickness of conductor A
+        ...
+    }
+    phases: {'A', ... }
+
+cable_impedance = calculate_impedance(MultiConductorCarsonsEquations(Cable()))
+```
+
+To model a triplex secondary cable, the inputs should be keyed on secondary conductors `S1` and `S2`. The impedance result
+is a 2 x 2 matrix.
+
+```python
+class Cable:
+    resistance: {
+        'S1': per-length resistance of conductor S1 in ohm/meters
+        ...
+    }
+    geometric_mean_radius: {
+        'S1': geometric mean radius of conductor S1 in meters
+        ...
+    }
+    wire_positions: {
+        'S1': (x, y) cross-sectional position of conductor S1 in meters
+        ...
+    }
+    outside_radius: {
+        'S1': outside radius of conductor S1, including insulation and jacket thickness
+        ...
+    }
+    insulation_thickness: {
+        'S1': insulation thickness of conductor S1
+        ...
+    }
+    phases: {'S1', ... }
+```
+
+For examples of how to use the model, see the [multi-conductor cable
+tests](https://github.com/opusonesolutions/carsons/blob/master/tests/test_multi_conductor.py).
 
 Problem Description
 -------------------
