@@ -212,7 +212,51 @@ class Cable:
 For examples of how to use the model, see the [multi-conductor cable
 tests](https://github.com/opusonesolutions/carsons/blob/master/tests/test_multi_conductor.py).
 
-Problem Description
+
+### Tape Shield Cable
+
+`carsons` also supports modelling of tape shield cables of any
+phasings. Its usage is very similar to the example above, only requiring
+a few more parameters about the tape shield conductors in the line model
+object.
+
+```python
+from carsons import (TapeShieldedCableCarsonsEquations,
+                     calculate_impedance)
+
+class Cable:
+   resistance: {
+       'A': per-length resistance of conductor A in ohm/meters
+       ...
+   }
+   geometric_mean_radius: {
+       'A': geometric mean radius of conductor A in meters
+       ...
+   }
+   wire_positions: {
+        'A': (x, y) cross-sectional position of conductor A in meters
+        ...
+   }
+   phases: {'A', ... }
+   tape_shield_thickness: {
+       'A': thickness of tape shield conductor on phase A cable in meters
+       ...
+   }
+   tape_shield_outer_diameter: {
+       'A': outer diameter of tape shield conductor on phase A cable in meters
+       ...
+   }
+   
+
+cable_impedance = calculate_impedance(TapeShieldedCableCarsonsEquations(Cable()))
+```
+
+For examples of how to use the model, see the [tape shielded cable
+tests](https://github.com/opusonesolutions/carsons/blob/master/tests/test_tape_shielded_cables.py).
+
+
+
+## Problem Description
 -------------------
 
 Carsons equations model an AC transmission or distribution line into an

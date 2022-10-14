@@ -311,6 +311,67 @@ class ConcentricNeutralCarsonsEquations(ModifiedCarsonsEquations):
         return (GMR_s * k * R**(k-1))**(1/k)
 
 
+class TapeShieldedCableCarsonsEquations(ModifiedCarsonsEquations):
+
+    ρ_tape_shield = 1.7721e-8  # copper resistivity at 20 degrees, ohm-meter
+
+    def __init__(self, model, *args, **kwargs):
+        super().__init__(model)
+        self.ds = model.tape_shield_outer_diameter
+        self.thickness = model.tape_shield_thickness
+
+        self.phases.extend(
+            f'{ph}t' for ph in model.tape_shield_outer_diameter.keys()
+        )
+
+        self.r.update({
+            f'{ph}t': self.compute_shield_r(self.ds[ph], self.thickness[ph])
+            for ph in model.tape_shield_outer_diameter.keys()
+        })
+
+        self.gmr.update({
+            f'{ph}t': self.compute_shield_gmr(self.ds[ph], self.thickness[ph])
+            for ph in model.tape_shield_outer_diameter.keys()
+        })
+
+        # set shield position to be the same as its phase conductor position
+        tape_shield_positions = {
+            f'{ph}t': self.phase_positions[ph]
+            for ph in model.tape_shield_outer_diameter.keys()
+        }
+        self.phase_positions.update(tape_shield_positions)
+
+    @staticmethod
+    def compute_shield_gmr(ds, thickness) -> float:
+        return (ds - thickness) / 2
+
+    @classmethod
+    def compute_shield_r(cls, ds, thickness) -> float:
+        area = (π*(ds/2)**2) - (π*(ds/2 - thickness)**2)
+        return cls.ρ_tape_shield/area
+
+    def compute_d(self, i, j) -> float:
+        I, J = set(i), set(j)
+
+        one_tape_shield_same_phase = I ^ J == set('t')
+
+        if one_tape_shield_same_phase:
+            return self.gmr[i] if 't' in i else self.gmr[j]
+        else:
+            return super().compute_d(i, j)
+
+    @property
+    def conductors(self):
+        neutral_conductors = sorted([
+            ph for ph in self.phases if ph.startswith("N")
+        ])
+        shield_conductors = sorted([
+            ph for ph in self.phases if ph.endswith("t")
+        ])
+
+        return ['A', 'B', 'C'] + shield_conductors + neutral_conductors
+
+
 class MultiConductorCarsonsEquations(ModifiedCarsonsEquations):
     def __init__(self, model):
         super().__init__(model)
