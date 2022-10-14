@@ -61,8 +61,6 @@ class AN_Tape_Shielded_Cable:
 def test_single_phase_tape_shield_with_neutral_Keirsting():
     # Example 4.4, Kiersting, Distribution System Modelling and Analysis
     # 4th Ed, Taylor&Francis, 2018
-    # small numerical error found in solution to Kersting example
-    # and is adjusted for here
 
     n_pos = 3  # n phase conductor placed 3 inches away from phase cond
 
@@ -73,6 +71,10 @@ def test_single_phase_tape_shield_with_neutral_Keirsting():
         calculate_impedance(tape_shielded_cable),
         array(
             [
+                #  Kersting example has:
+                #  [1.3218 + 1j * 0.6744, ...]
+                #  but we think this is due to a numerical error in
+                #  the calculation of the tape shield resistivity
                 [1.3325 + 1j * 0.6458, 0.0 + 1j * 0.0, 0 + 1j * 0],
                 [0 + 1j * 0, 0 + 1j * 0, 0 + 1j * 0],
                 [0 + 1j * 0, 0 + 1j * 0, 0 + 1j * 0],
