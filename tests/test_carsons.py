@@ -1,16 +1,14 @@
 import pytest
-from numpy.testing import assert_array_almost_equal
 from numpy import array
+from numpy.testing import assert_array_almost_equal
+
 from carsons.carsons import (
     CarsonsEquations,
-    perform_kron_reduction,
     calculate_sequence_impedance_matrix,
     calculate_sequence_impedances,
+    perform_kron_reduction,
 )
-from tests.test_overhead_line import (
-    ACBN_geometry_line,
-    CN_geometry_line,
-)
+from tests.test_overhead_line import ACBN_geometry_line, CN_geometry_line
 
 
 class ABCN_balanced_line():

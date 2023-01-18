@@ -2,9 +2,9 @@ from collections import defaultdict
 from itertools import islice
 from typing import Dict, Iterable, Iterator, Tuple
 
-from numpy import arctan, cos, log, sin, sqrt, zeros, exp
-from numpy import array, ndarray
+from numpy import arctan, array, cos, exp, log, ndarray
 from numpy import pi as π
+from numpy import sin, sqrt, zeros
 from numpy.linalg import inv
 
 alpha = exp(2j*π/3)

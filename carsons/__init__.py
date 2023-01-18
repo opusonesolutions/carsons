@@ -1,11 +1,13 @@
-from carsons.carsons import (convert_geometric_model,               # noqa 401
-                             calculate_impedance,                   # noqa 401
-                             calculate_sequence_impedance_matrix,
-                             calculate_sequence_impedances,
-                             CarsonsEquations,
-                             ConcentricNeutralCarsonsEquations,     # noqa 401
-                             MultiConductorCarsonsEquations,        # noqa 401
-                             TapeShieldedCableCarsonsEquations)        # noqa 401
+from carsons.carsons import (  # noqa F401
+    CarsonsEquations,
+    ConcentricNeutralCarsonsEquations,
+    MultiConductorCarsonsEquations,
+    TapeShieldedCableCarsonsEquations,
+    calculate_impedance,
+    calculate_sequence_impedance_matrix,
+    calculate_sequence_impedances,
+    convert_geometric_model,
+)
 
 name = "carsons"
 

@@ -1,6 +1,7 @@
 import pytest
-from numpy.testing import assert_array_almost_equal
 from numpy import array
+from numpy.testing import assert_array_almost_equal
+
 from carsons.carsons import convert_geometric_model
 
 # `carsons` implements the model entirely in SI metric units, however this

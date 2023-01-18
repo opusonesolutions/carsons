@@ -1,7 +1,8 @@
 from numpy.testing import assert_array_almost_equal
 
-from .test_carsons import ACBN_line_z_primitive
 from carsons.carsons import CarsonsEquations
+
+from .test_carsons import ACBN_line_z_primitive
 
 
 def test_compatibility_with_dict_of_phases():
