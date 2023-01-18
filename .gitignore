@@ -4,3 +4,11 @@
 
 .coverage
 carsons.code-workspace
+
+# pyenv
+.python-version
+
+
+# build
+dist
+*.egg-info
