@@ -1,0 +1,4 @@
+include carsons/VERSION
+include carsons/py.typed
+
+prune tests
