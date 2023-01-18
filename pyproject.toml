@@ -28,12 +28,10 @@ dependencies = [
 
 [project.optional-dependencies]
 test = [
-    "flake8",
     "coveralls",
-    "pytest>=3.6",
-    "pytest-cov",
-    "pytest-mypy",
     "pint",
+    "pre-commit",
+    "pytest>=3.6",
 ]
 
 [project.urls]
@@ -49,6 +47,11 @@ include=["carsons*"]
 
 [tool.setuptools.dynamic]
 version = {file = "carsons/VERSION"}
+
+
+## linting configurations
+[tool.isort]
+profile="black"
 
 [tool.mypy]
 files=["carsons", "tests"]
