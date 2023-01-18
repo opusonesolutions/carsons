@@ -32,6 +32,7 @@ test = [
     "pint",
     "pre-commit",
     "pytest>=3.6",
+    "pytest-cov",
 ]
 
 [project.urls]
