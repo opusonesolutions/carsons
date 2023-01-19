@@ -6,7 +6,7 @@ from .test_carsons import ACBN_line_z_primitive
 
 
 def test_compatibility_with_dict_of_phases():
-    class BackwardsCompatibleModel():
+    class BackwardsCompatibleModel:
         def __init__(self):
             self.resistance = {
                 "A": 0.000115575,

@@ -15,6 +15,7 @@ ohms = ureg.ohms
 kft = ureg.feet * 1000
 
 
+# fmt: off
 def test_concentric_neutral_cable():
     """
     Validation test against example in Kersting's book.
@@ -61,16 +62,17 @@ def test_concentric_neutral_cable():
             'neutral_strand_count': 13,
         },
     }))
-
     assert_array_almost_equal(
         calculate_impedance(model),
-        array([
-            [0.7981 + 1j*0.4467, 0.3188 + 1j*0.0334, 0.2848 + 1j*0.0138],
-            [0.3188 + 1j*0.0334, 0.7890 + 1j*0.4048, 0.3188 + 1j*0.0334],
-            [0.2848 + 1j*0.0138, 0.3188 + 1j*0.0334, 0.7981 + 1j*0.4467],
-
-        ]) * OHM_PER_MILE_TO_OHM_PER_METER,
-        decimal=4
+        array(
+            [
+                [0.7981 + 1j * 0.4467, 0.3188 + 1j * 0.0334, 0.2848 + 1j * 0.0138],
+                [0.3188 + 1j * 0.0334, 0.7890 + 1j * 0.4048, 0.3188 + 1j * 0.0334],
+                [0.2848 + 1j * 0.0138, 0.3188 + 1j * 0.0334, 0.7981 + 1j * 0.4467],
+            ]
+        )
+        * OHM_PER_MILE_TO_OHM_PER_METER,
+        decimal=4,
     )
 
 
@@ -78,7 +80,6 @@ def test_concentric_neutral_cable_IEEE37():
     """
     Validation test against IEEE37 network underground cable configuration 723.
     """
-
     model = ConcentricNeutralCarsonsEquations(ConcentricLineModel({
         "A": {
             'resistance': (0.7690 * (ohms/miles)).to('ohm / meters').magnitude,
@@ -121,16 +122,17 @@ def test_concentric_neutral_cable_IEEE37():
             'neutral_strand_count': 7,
         },
     }))
-
     assert_array_almost_equal(
         calculate_impedance(model),
-        array([
-            [1.2936 + 1j*0.6713, 0.4871 + 1j*0.2111, 0.4585 + 1j*0.1521],
-            [0.4871 + 1j*0.2111, 1.3022 + 1j*0.6326, 0.4871 + 1j*0.2111],
-            [0.4585 + 1j*0.1521, 0.4871 + 1j*0.2111, 1.2936 + 1j*0.6713],
-
-        ]) * OHM_PER_MILE_TO_OHM_PER_METER,
-        decimal=4
+        array(
+            [
+                [1.2936 + 1j * 0.6713, 0.4871 + 1j * 0.2111, 0.4585 + 1j * 0.1521],
+                [0.4871 + 1j * 0.2111, 1.3022 + 1j * 0.6326, 0.4871 + 1j * 0.2111],
+                [0.4585 + 1j * 0.1521, 0.4871 + 1j * 0.2111, 1.2936 + 1j * 0.6713],
+            ]
+        )
+        * OHM_PER_MILE_TO_OHM_PER_METER,
+        decimal=4,
     )
 
 
@@ -169,16 +171,17 @@ def test_2ph_concentric_neutral_cable():
             'neutral_strand_count': 13,
         },
     }))
-
     assert_array_almost_equal(
         calculate_impedance(model),
-        array([
-            [0.867953 + 1j*0.442045, 0.389392 + 1j*0.0511399, 0 + 1j * 0],
-            [0.389392 + 1j*0.0511399, 0.867953 + 1j*0.442045, 0 + 1j * 0],
-            [0 + 1j * 0, 0 + 1j * 0, 0 + 1j * 0],
-
-        ]) * OHM_PER_MILE_TO_OHM_PER_METER,
-        decimal=4
+        array(
+            [
+                [0.867953 + 1j * 0.442045,  0.389392 + 1j * 0.0511399, 0 + 1j * 0],
+                [0.389392 + 1j * 0.0511399, 0.867953 + 1j * 0.442045,  0 + 1j * 0],
+                [       0 + 1j * 0,                0 + 1j * 0,         0 + 1j * 0],  # noqa E201
+            ]
+        )
+        * OHM_PER_MILE_TO_OHM_PER_METER,
+        decimal=4,
     )
 
 
@@ -207,11 +210,14 @@ def test_1ph_concentric_neutral_cable():
 
     assert_array_almost_equal(
         calculate_impedance(model),
-        array([
-            [1.04185 + 1j*0.602329, 0 + 1j * 0, 0 + 1j * 0],
-            [0 + 1j * 0, 0 + 1j * 0, 0 + 1j * 0],
-            [0 + 1j * 0, 0 + 1j * 0, 0 + 1j * 0],
-
-        ]) * OHM_PER_MILE_TO_OHM_PER_METER,
-        decimal=4
+        array(
+            [
+                [1.04185 + 1j * 0.602329, 0 + 1j * 0, 0 + 1j * 0],
+                [      0 + 1j * 0,        0 + 1j * 0, 0 + 1j * 0],  # noqa E201
+                [      0 + 1j * 0,        0 + 1j * 0, 0 + 1j * 0],  # noqa E201
+            ]
+        )
+        * OHM_PER_MILE_TO_OHM_PER_METER,
+        decimal=4,
     )
+# fmt: on
