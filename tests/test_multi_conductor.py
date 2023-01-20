@@ -20,26 +20,30 @@ def test_triplex_phased_cable():
     """
     Test against 3/0 triplex NS75 aluminum conductor cable.
     """
-    phases = 'ABC'
-    insulation_thickness = 0.00137   # meters
+    phases = "ABC"
+    insulation_thickness = 0.00137  # meters
     phase_conductor = {
-        'resistance': (0.611 * (ohms / miles)).to('ohm / meters').magnitude,
-        'gmr': (0.014 * feet).to('meters').magnitude,
-        'wire_positions': (0, 5),
-        'outside_radius': ((0.464 / 2 * inches).to('meters').magnitude +
-                           insulation_thickness),
+        "resistance": (0.611 * (ohms / miles)).to("ohm / meters").magnitude,
+        "gmr": (0.014 * feet).to("meters").magnitude,
+        "wire_positions": (0, 5),
+        "outside_radius": (
+            (0.464 / 2 * inches).to("meters").magnitude + insulation_thickness
+        ),
     }
     multi_line_model = MultiLineModel({ph: phase_conductor for ph in phases})
     carsons_model = MultiConductorCarsonsEquations(multi_line_model)
 
-    assert_array_almost_equal(calculate_impedance(carsons_model), array(
-        [[4.389e-4 + 1j*9.200e-4, 5.922e-5 + 1j*8.277e-4,
-          5.922e-5 + 1j*8.277e-4],
-         [5.922e-5 + 1j*8.277e-4, 4.389e-4 + 1j*9.200e-4,
-          5.922e-5 + 1j*8.277e-4],
-         [5.922e-5 + 1j*8.277e-4, 5.922e-5 + 1j*8.277e-4,
-          4.389e-4 + 1j*9.200e-4]]
-    ), decimal=4)
+    # fmt: off
+    assert_array_almost_equal(
+        calculate_impedance(carsons_model),
+        array([
+            [4.389e-4 + 1j * 9.200e-4,  5.922e-5 + 1j * 8.277e-4,  5.922e-5 + 1j * 8.277e-4],
+            [5.922e-5 + 1j * 8.277e-4,  4.389e-4 + 1j * 9.200e-4,  5.922e-5 + 1j * 8.277e-4],
+            [5.922e-5 + 1j * 8.277e-4,  5.922e-5 + 1j * 8.277e-4,  4.389e-4 + 1j * 9.200e-4],
+        ]),
+        decimal=4,
+    )
+    # fmt: off
 
 
 def test_triplex_secondary():
@@ -48,80 +52,97 @@ def test_triplex_secondary():
     of 'Distribution System Modeling and Analysis' by William H.Kersting,
     4th edition.
     """
+
+    # fmt: off
     conductor = {
-        'resistance': (0.97 * (ohms / miles)).to('ohm / meters').magnitude,
-        'gmr': (0.0111 * feet).to('meters').magnitude,
-        'wire_positions': (0, 1),
+        "resistance": (0.97 * (ohms / miles)).to("ohm / meters").magnitude,
+        "gmr": (0.0111 * feet).to("meters").magnitude,
+        "wire_positions": (0, 1),
     }
-    insulation_thickness = 0.08   # inches
+    insulation_thickness = 0.08  # inches
     phase_conductor = {
         **conductor,
-        'outside_radius': ((0.368 / 2 + insulation_thickness) * inches
-                           ).to('meters').magnitude,
+        "outside_radius":
+            ((0.368 / 2 + insulation_thickness) * inches).to("meters").magnitude,
     }
     neutral_conductor = {
         **conductor,
-        'outside_radius': (0.368 / 2 * inches).to('meters').magnitude,
+        "outside_radius": (0.368 / 2 * inches).to("meters").magnitude,
     }
     multi_line_model = MultiLineModel(
-        {'S1': phase_conductor, 'S2': phase_conductor, 'N': neutral_conductor}
+        {"S1": phase_conductor, "S2": phase_conductor, "N": neutral_conductor}
     )
+    # fmt: on
+
     carsons_model = MultiConductorCarsonsEquations(multi_line_model)
+    assert_array_almost_equal(
+        calculate_impedance(carsons_model),
+        array(
+            [
+                [1.5304 + 1j * 0.6132, 0.5574 + 1j * 0.4461],
+                [0.5574 + 1j * 0.4461, 1.5304 + 1j * 0.6132],
+            ]
+        )
+        * OHM_PER_MILE_TO_OHM_PER_METER,
+        decimal=4,
+    )
 
-    assert_array_almost_equal(calculate_impedance(carsons_model), array(
-        [[1.5304 + 1j * 0.6132, 0.5574 + 1j * 0.4461],
-         [0.5574 + 1j * 0.4461, 1.5304 + 1j * 0.6132]]
-    ) * OHM_PER_MILE_TO_OHM_PER_METER, decimal=4)
 
-
+# fmt: off
 EXPECTED_DUPLEX_IMPEDANCE = array(
-        [[0.0 + 1j*0.0, 0.0 + 1j*0.0, 0.0 + 1j*0.0],
-         [0.0 + 1j*0.0, 9.521e-4 + 1j*3.744e-4, 0.0 + 1j*0.0],
-         [0.0 + 1j*0.0, 0.0 + 1j*0.0, 0.0 + 1j*0.0]]
-    )
+    [
+        [0.0 + 1j * 0.0,        0.0 + 1j * 0.0,        0.0 + 1j * 0.0],
+        [0.0 + 1j * 0.0,   9.521e-4 + 1j * 3.744e-4,   0.0 + 1j * 0.0],
+        [0.0 + 1j * 0.0,        0.0 + 1j * 0.0,        0.0 + 1j * 0.0],
+    ]
+)
 
-EXPECTED_QUADRUPLEX_IMPEDANCE = array(
-        [[5.223e-4 + 1j*2.279e-4, 2.216e-4 + 1j*1.373e-4,
-          2.216e-4 + 1j*1.373e-4],
-         [2.216e-4 + 1j*1.373e-4, 5.223e-4 + 1j*2.279e-4,
-          2.216e-4 + 1j*1.373e-4],
-         [2.216e-4 + 1j*1.373e-4, 2.216e-4 + 1j*1.373e-4,
-          5.223e-4 + 1j*2.279e-4]]
-    )
+EXPECTED_QUADRUPLEX_IMPEDANCE = array([
+    [5.223e-4 + 1j * 2.279e-4,   2.216e-4 + 1j * 1.373e-4,   2.216e-4 + 1j * 1.373e-4],
+    [2.216e-4 + 1j * 1.373e-4,   5.223e-4 + 1j * 2.279e-4,   2.216e-4 + 1j * 1.373e-4],
+    [2.216e-4 + 1j * 1.373e-4,   2.216e-4 + 1j * 1.373e-4,   5.223e-4 + 1j * 2.279e-4],
+])
 
 
 @pytest.mark.parametrize(
-    'phases, resistance, gmr, wire_position, core_radius,'
-    'insulation_thickness, expected_result',
-    [('B', 0.97, 0.0111, (0, 5), 0.368/2, 0.00137, EXPECTED_DUPLEX_IMPEDANCE),
-     ('ABC', 0.484, 0.0158, (0, 5), 0.522/2, 0.00137,
-      EXPECTED_QUADRUPLEX_IMPEDANCE)]
+    "phases, resistance, gmr, wire_position, core_radius, insulation_thickness, expected_result",
+    [
+        ("B",   0.97,  0.0111, (0, 5), 0.368 / 2, 0.00137, EXPECTED_DUPLEX_IMPEDANCE),
+        ("ABC", 0.484, 0.0158, (0, 5), 0.522 / 2, 0.00137, EXPECTED_QUADRUPLEX_IMPEDANCE),
+    ],
 )
+# fmt: on
 def test_multi_conductor_cable_with_neutral(
-        phases, resistance, gmr, wire_position, core_radius,
-        insulation_thickness, expected_result
+    phases,
+    resistance,
+    gmr,
+    wire_position,
+    core_radius,
+    insulation_thickness,
+    expected_result,
 ):
     conductor = {
-        'resistance': (resistance * (ohms / miles)
-                       ).to('ohm / meters').magnitude,
-        'gmr': (gmr * feet).to('meters').magnitude,
-        'wire_positions': wire_position,
+        "resistance": (resistance * (ohms / miles)).to("ohm / meters").magnitude,
+        "gmr": (gmr * feet).to("meters").magnitude,
+        "wire_positions": wire_position,
     }
     phase_conductor = {
         **conductor,
-        'outside_radius': ((core_radius * inches).to('meters').magnitude +
-                           insulation_thickness),
+        "outside_radius": (
+            (core_radius * inches).to("meters").magnitude + insulation_thickness
+        ),
     }
     neutral_conductor = {
         **conductor,
-        'outside_radius': (core_radius * inches).to('meters').magnitude,
+        "outside_radius": (core_radius * inches).to("meters").magnitude,
     }
 
     line_model_dict = {ph: phase_conductor for ph in phases}
-    line_model_dict.update({'N': neutral_conductor})
+    line_model_dict.update({"N": neutral_conductor})
 
     multi_line_model = MultiLineModel(line_model_dict)
     carsons_model = MultiConductorCarsonsEquations(multi_line_model)
 
-    assert_array_almost_equal(calculate_impedance(carsons_model),
-                              expected_result, decimal=4)
+    assert_array_almost_equal(
+        calculate_impedance(carsons_model), expected_result, decimal=4
+    )

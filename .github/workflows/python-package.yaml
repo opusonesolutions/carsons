@@ -12,29 +12,58 @@ on:
       - master
 
 jobs:
-  test:
+  unit-test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e .[test]
+        pre-commit install
+        pre-commit autoupdate
+    - name: Lint with precommit checks
+      run: |
+        pre-commit run --all-files
+    - name: Test with Pytest
+      run: |
+        pytest \
+          --junitxml=junit/test-results.xml \
+          --cov-report=xml --cov=carsons \
+          tests/
+    - name: Make coverage file
+      run: |
+        coverage xml
+    - uses: codecov/codecov-action@v3
+      with:
+        files: ./coverage.xml # optional
+        flags: unittests # optional
+        name: codecov-umbrella # optional
+        fail_ci_if_error: true # optional (default = false)
+        verbose: true # optional (default = false)
+
+  compatibility:
+    needs: unit-test
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.6, 3.7, 3.8, 3.9]
+        python-version: ["3.7", "3.8", "3.9", "3.11", pypy3.8, pypy3.9]
+        # skipping 3.10 since the unit-test job runs against it
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -e .[test]
-    - name: Lint with flake8
-      run: |
-        flake8
     - name: Test with Pytest
       run: |
-        pytest \
-          --junitxml=junit/test-results.xml \
-          --mypy \
-          --cov-report term-missing  --cov-report=xml --cov-report=html --cov=carsons \
-          tests/
+        pytest

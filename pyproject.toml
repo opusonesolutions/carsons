@@ -1,0 +1,64 @@
+[project]
+name = "carsons"
+dynamic = ["version"]
+description = "A python library computing carson's equations."
+classifiers=[
+    "Development Status :: 3 - Alpha",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Scientific/Engineering :: Mathematics",
+]
+keywords=["carsons", "cables", "lines", "power systems", "energy"]
+license = { file = "LICENSE.txt" }
+readme="README.md"
+authors = [
+    { name = "Opus One Solutions" },
+    { email = "rnd@opusonesolutions.com" },
+]
+dependencies = [
+    "numpy>=1.13.1",
+]
+
+[project.optional-dependencies]
+test = [
+    "coveralls",
+    "pint",
+    "pre-commit",
+    "pytest>=3.6",
+    "pytest-cov",
+]
+
+[project.urls]
+repository = "https://github.com/opusonesolutions/carsons"
+
+## build specification
+[build-system]
+requires = ["setuptools >= 61.0.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include=["carsons*"]
+
+[tool.setuptools.dynamic]
+version = {file = ["carsons/VERSION"]}
+
+
+## linting configurations
+[tool.isort]
+profile="black"
+
+[tool.mypy]
+files=["carsons", "tests"]
+python_version=3.10
+
+[tool.mypy.overrides]
+warn_unused_configs = true
+warn_unused_ignores = true
+check_untyped_defs = true

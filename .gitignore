@@ -3,4 +3,15 @@
 */__pycache__/
 
 .coverage
+.coverage.xml
+
+# IDE stuff
 carsons.code-workspace
+.DS_store
+
+# pyenv
+.python-version
+
+# build
+dist
+*.egg-info

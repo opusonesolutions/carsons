@@ -4,7 +4,7 @@ carsons
 [![latest release on pypi](https://badge.fury.io/py/carsons.svg)](https://badge.fury.io/py/carsons)
 [![versons of python supported by carsons](https://img.shields.io/pypi/pyversions/carsons.svg)](https://pypi.python.org/pypi/carsons)
 [![GitHub license](https://img.shields.io/github/license/opusonesolutions/carsons.svg)](https://github.com/opusonesolutions/carsons/blob/master/LICENSE.txt)
-[![build passing or failing](https://travis-ci.org/opusonesolutions/carsons.svg?branch=master)](https://travis-ci.org/opusonesolutions/carsons)
+[![build passing or failing](https://github.com/opusonesolutions/carsons/blob/master/.github/workflows/python-package.yaml/badge.svg)](https://travis-ci.org/opusonesolutions/carsons)
 [![test coverage](https://coveralls.io/repos/github/opusonesolutions/carsons/badge.svg?branch=master)](https://coveralls.io/github/opusonesolutions/carsons?branch=master)
 [![Maintainability](https://api.codeclimate.com/v1/badges/22cfed180fd6032fe29b/maintainability)](https://codeclimate.com/github/opusonesolutions/carsons/maintainability)
 

@@ -1,12 +1,9 @@
 from numpy import array
 from numpy.testing import assert_array_almost_equal
 
-from carsons.carsons import (
-    TapeShieldedCableCarsonsEquations,
-    calculate_impedance,
-)
+from carsons.carsons import TapeShieldedCableCarsonsEquations, calculate_impedance
+from tests.test_concentric_neutral_cable import feet, inches, miles, ohms, ureg
 from tests.test_overhead_line import OHM_PER_MILE_TO_OHM_PER_METER
-from tests.test_concentric_neutral_cable import ureg, feet, inches, miles, ohms
 
 mils = ureg.mil_length
 
