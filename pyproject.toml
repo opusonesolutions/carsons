@@ -47,7 +47,7 @@ build-backend = "setuptools.build_meta"
 include=["carsons*"]
 
 [tool.setuptools.dynamic]
-version = {file = "carsons/VERSION"}
+version = {file = ["carsons/VERSION"]}
 
 
 ## linting configurations
