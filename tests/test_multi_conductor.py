@@ -88,24 +88,22 @@ def test_triplex_secondary():
     )
 
 
+# fmt: off
 EXPECTED_DUPLEX_IMPEDANCE = array(
     [
-        [0.0 + 1j * 0.0, 0.0 + 1j * 0.0, 0.0 + 1j * 0.0],
-        [0.0 + 1j * 0.0, 9.521e-4 + 1j * 3.744e-4, 0.0 + 1j * 0.0],
-        [0.0 + 1j * 0.0, 0.0 + 1j * 0.0, 0.0 + 1j * 0.0],
+        [0.0 + 1j * 0.0,        0.0 + 1j * 0.0,        0.0 + 1j * 0.0],
+        [0.0 + 1j * 0.0,   9.521e-4 + 1j * 3.744e-4,   0.0 + 1j * 0.0],
+        [0.0 + 1j * 0.0,        0.0 + 1j * 0.0,        0.0 + 1j * 0.0],
     ]
 )
 
-EXPECTED_QUADRUPLEX_IMPEDANCE = array(
-    [
-        [5.223e-4 + 1j * 2.279e-4,  2.216e-4 + 1j * 1.373e-4,  2.216e-4 + 1j * 1.373e-4],
-        [2.216e-4 + 1j * 1.373e-4,  5.223e-4 + 1j * 2.279e-4,  2.216e-4 + 1j * 1.373e-4],
-        [2.216e-4 + 1j * 1.373e-4,  2.216e-4 + 1j * 1.373e-4,  5.223e-4 + 1j * 2.279e-4],
-    ]
-)
+EXPECTED_QUADRUPLEX_IMPEDANCE = array([
+    [5.223e-4 + 1j * 2.279e-4,   2.216e-4 + 1j * 1.373e-4,   2.216e-4 + 1j * 1.373e-4],
+    [2.216e-4 + 1j * 1.373e-4,   5.223e-4 + 1j * 2.279e-4,   2.216e-4 + 1j * 1.373e-4],
+    [2.216e-4 + 1j * 1.373e-4,   2.216e-4 + 1j * 1.373e-4,   5.223e-4 + 1j * 2.279e-4],
+])
 
 
-# fmt: off
 @pytest.mark.parametrize(
     "phases, resistance, gmr, wire_position, core_radius, insulation_thickness, expected_result",
     [
