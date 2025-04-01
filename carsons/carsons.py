@@ -1,10 +1,9 @@
 from collections import defaultdict
 from itertools import islice
-from typing import Dict, Iterable, Iterator, Tuple
+from typing import Iterable, Iterator
 
-from numpy import arctan, array, cos, exp, log, ndarray
+from numpy import arctan, array, cos, exp, log, ndarray, sin, sqrt, zeros
 from numpy import pi as π
-from numpy import sin, sqrt, zeros
 from numpy.linalg import inv
 
 alpha = exp(2j * π / 3)
@@ -94,15 +93,14 @@ def calculate_sequence_impedances(Z):
 
 
 class CarsonsEquations:
-
     ρ = 100  # resistivity, ohms/meter^3
     μ = 4 * π * 1e-7  # permeability, Henry / meter
 
     def __init__(self, model):
         self.phases: Iterable[str] = model.phases
-        self.phase_positions: Dict[str, Tuple[float, float]] = model.wire_positions
-        self.gmr: Dict[str, float] = model.geometric_mean_radius
-        self.r: Dict[str, float] = model.resistance
+        self.phase_positions: dict[str, tuple[float, float]] = model.wire_positions
+        self.gmr: dict[str, float] = model.geometric_mean_radius
+        self.r: dict[str, float] = model.resistance
 
         self.ƒ = getattr(model, "frequency", 60)
         self.ω = 2.0 * π * self.ƒ  # angular frequency radians / second
@@ -254,15 +252,15 @@ class ModifiedCarsonsEquations(CarsonsEquations):
 class ConcentricNeutralCarsonsEquations(ModifiedCarsonsEquations):
     def __init__(self, model, *args, **kwargs):
         super().__init__(model)
-        self.neutral_strand_gmr: Dict[str, float] = model.neutral_strand_gmr
-        self.neutral_strand_count: Dict[str, float] = defaultdict(
+        self.neutral_strand_gmr: dict[str, float] = model.neutral_strand_gmr
+        self.neutral_strand_count: dict[str, float] = defaultdict(
             lambda: None, model.neutral_strand_count
         )
-        self.neutral_strand_resistance: Dict[
-            str, float
-        ] = model.neutral_strand_resistance
+        self.neutral_strand_resistance: dict[str, float] = (
+            model.neutral_strand_resistance
+        )
         # fmt: off
-        self.radius: Dict[str, float] = defaultdict(
+        self.radius: dict[str, float] = defaultdict(
             lambda: None,
             {
                 phase: (diameter_over_neutral - model.neutral_strand_diameter[phase]) / 2
@@ -316,7 +314,6 @@ class ConcentricNeutralCarsonsEquations(ModifiedCarsonsEquations):
 
 
 class TapeShieldedCableCarsonsEquations(ModifiedCarsonsEquations):
-
     ρ_tape_shield = 1.7721e-8  # copper resistivity at 20 degrees, ohm-meter
 
     def __init__(self, model, *args, **kwargs):
@@ -373,7 +370,7 @@ class TapeShieldedCableCarsonsEquations(ModifiedCarsonsEquations):
 class MultiConductorCarsonsEquations(ModifiedCarsonsEquations):
     def __init__(self, model):
         super().__init__(model)
-        self.outside_radius: Dict[str, float] = model.outside_radius
+        self.outside_radius: dict[str, float] = model.outside_radius
 
     def compute_d(self, i, j) -> float:
         # Assumptions:

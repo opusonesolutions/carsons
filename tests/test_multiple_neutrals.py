@@ -7,7 +7,6 @@ from tests.test_carsons import ACBN_line_z_primitive
 
 
 def test_dual_neutral_model():
-
     model = CarsonsEquations(
         LineModel(
             {
