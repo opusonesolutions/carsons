@@ -38,6 +38,7 @@ optional-dependencies.test = [
   "liccheck",
   "pint",
   "pre-commit",
+  "pycobertura",
   "pytest>=3.6",
   "pytest-cov",
   # needed by liccheck
