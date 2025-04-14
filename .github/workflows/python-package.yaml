@@ -66,7 +66,7 @@ jobs:
 
     - name: Install lxml deps for building
       if: ${{ startsWith(matrix.python-version, 'pypy' )}}
-      run: sudo apt-get install python3-lxml
+      run: sudo apt-get install libxml2-dev libxslt-dev python-dev python3-lxml
 
     - name: Install dependencies
       run: |
