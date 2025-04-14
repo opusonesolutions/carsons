@@ -1,64 +1,101 @@
-[project]
-name = "carsons"
-dynamic = ["version"]
-description = "A python library computing carson's equations."
-classifiers=[
-    "Development Status :: 3 - Alpha",
-    "License :: OSI Approved :: MIT License",
-    "Programming Language :: Python",
-    "Programming Language :: Python :: 3.7",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Topic :: Software Development :: Libraries :: Python Modules",
-    "Topic :: Scientific/Engineering :: Physics",
-    "Topic :: Scientific/Engineering :: Mathematics",
-]
-keywords=["carsons", "cables", "lines", "power systems", "energy"]
-license = { file = "LICENSE.txt" }
-readme="README.md"
-authors = [
-    { name = "Opus One Solutions" },
-    { email = "rnd@opusonesolutions.com" },
-]
-dependencies = [
-    "numpy>=1.13.1",
-]
-
-[project.optional-dependencies]
-test = [
-    "coveralls",
-    "pint",
-    "pre-commit",
-    "pytest>=3.6",
-    "pytest-cov",
-]
-
-[project.urls]
-repository = "https://github.com/opusonesolutions/carsons"
-
-## build specification
 [build-system]
-requires = ["setuptools >= 61.0.0"]
 build-backend = "setuptools.build_meta"
 
+requires = [ "setuptools>=61" ]
+
+[project]
+name = "carsons"
+description = "A python library computing carson's equations."
+readme = "README.md"
+keywords = [ "cables", "carsons", "energy", "lines", "power systems" ]
+license = { file = "LICENSE.txt" }
+authors = [
+  { name = "Opus One Solutions" },
+  { email = "rnd@opusonesolutions.com" },
+]
+requires-python = ">=3.10"
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Scientific/Engineering :: Mathematics",
+  "Topic :: Scientific/Engineering :: Physics",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dynamic = [ "version" ]
+dependencies = [
+  "numpy>=1.13.1",
+]
+
+optional-dependencies.test = [
+  "coverage>=7.8",
+  # precommit hook doesn't install it for *reasons*
+  "liccheck",
+  "pint",
+  "pre-commit",
+  "pycobertura",
+  "pytest>=3.6",
+  "pytest-cov",
+  # needed by liccheck
+  "setuptools",
+]
+## build specification
+urls.repository = "https://github.com/opusonesolutions/carsons"
+
 [tool.setuptools.packages.find]
-include=["carsons*"]
+include = [ "carsons*" ]
 
 [tool.setuptools.dynamic]
-version = {file = ["carsons/VERSION"]}
-
+version = { file = [ "carsons/VERSION" ] }
 
 ## linting configurations
-[tool.isort]
-profile="black"
+
+[tool.ruff]
+lint.extend-select = [ "I" ]
+
+ignore = [ "E741" ]
+
+[tool.coverage.run]
+branch = true
+omit = [ "tests/*" ]
+
+[tool.coverage.report]
+precision = 2
+show_missing = true
 
 [tool.mypy]
-files=["carsons", "tests"]
-python_version=3.10
+files = [ "carsons", "tests" ]
+python_version = 3.10
 
 [tool.mypy.overrides]
 warn_unused_configs = true
 warn_unused_ignores = true
 check_untyped_defs = true
+
+[tool.bandit]
+exclude_dirs = [ "tests" ]
+
+[tool.liccheck]
+authorized_licenses = [
+  "BSD",
+  "MIT",
+  "License :: OSI Approved :: MIT",
+  "Apache Software",
+  "Mozilla Public License 2.0 (MPL 2.0)",
+  "LGPLv3+",
+  "LGPLv3",
+  "public domain",
+  "Python Software Foundation",
+]
+unauthorized_licenses = [
+  "GPL v3",
+  "The Unlicense (Unlicense)",
+  "ISC",
+  "ISC License (ISCL)",
+]
+dependencies = true # to load [project.dependencies]
