@@ -4,7 +4,7 @@
 .ruff_cache
 
 .coverage
-.coverage.xml
+coverage.xml
 
 # IDE stuff
 carsons.code-workspace

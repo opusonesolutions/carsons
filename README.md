@@ -3,7 +3,7 @@ carsons
 
 [![latest release on pypi](https://badge.fury.io/py/carsons.svg)](https://badge.fury.io/py/carsons)
 [![versons of python supported by carsons](https://img.shields.io/pypi/pyversions/carsons.svg)](https://pypi.python.org/pypi/carsons)
-[![GitHub license](https://img.shields.io/github/license/opusonesolutions/carsons.svg)](https://github.com/opusonesolutions/carsons/blob/master/LICENSE.txt)
+[![GitHub license](https://img.shields.io/github/license/opusonesolutions/carsons.svg)](https://github.com/opusonesolutions/carsons/blob/main/LICENSE.txt)
 
 This is an implementation of Carson's Equations, a mathematical model
 for deriving the equivalent impedance of an AC transmission or
@@ -85,7 +85,7 @@ z_primitive = CarsonsEquations(Line()).build_z_primitive()
 ```
 
 For examples of how to use the model, see the [overhead wire
-tests](https://github.com/opusonesolutions/carsons/blob/master/tests/test_overhead_line.py).
+tests](https://github.com/opusonesolutions/carsons/blob/main/tests/test_overhead_line.py).
 
 `carsons` is tested against several cable configurations from the [IEEE
 test feeders](http://sites.ieee.org/pes-testfeeders/resources/), as well as
@@ -141,7 +141,7 @@ cable_impedance = calculate_impedance(ConcentricNeutralCarsonsEquations(Cable())
 ```
 
 For examples of how to use the model, see the [concentric cable
-tests](https://github.com/opusonesolutions/carsons/blob/master/tests/test_concentric_neutral_cable.py).
+tests](https://github.com/opusonesolutions/carsons/blob/main/tests/test_concentric_neutral_cable.py).
 
 ### Multi-Conductor Cable
 
@@ -207,7 +207,7 @@ class Cable:
 ```
 
 For examples of how to use the model, see the [multi-conductor cable
-tests](https://github.com/opusonesolutions/carsons/blob/master/tests/test_multi_conductor.py).
+tests](https://github.com/opusonesolutions/carsons/blob/main/tests/test_multi_conductor.py).
 
 
 ### Tape Shield Cable
@@ -243,13 +243,13 @@ class Cable:
        'A': outer diameter of tape shield conductor on phase A cable in meters
        ...
    }
-   
+
 
 cable_impedance = calculate_impedance(TapeShieldedCableCarsonsEquations(Cable()))
 ```
 
 For examples of how to use the model, see the [tape shielded cable
-tests](https://github.com/opusonesolutions/carsons/blob/master/tests/test_tape_shielded_cables.py).
+tests](https://github.com/opusonesolutions/carsons/blob/main/tests/test_tape_shielded_cables.py).
 
 
 
